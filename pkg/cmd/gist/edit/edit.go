@@ -155,6 +155,15 @@ func editRun(opts *EditOptions) error {
 	// Transform our gist into the schema that the update endpoint expects
 	filesToupdate := make(map[string]*gistFileToUpdate, len(gist.Files))
 	for filename, file := range gist.Files {
+		if file.Truncated {
+			fullContent, err := shared.GetRawGistFile(client, file.RawURL)
+			if err != nil {
+				return err
+			}
+
+			file.Content = fullContent
+		}
+
 		filesToupdate[filename] = &gistFileToUpdate{
 			Content:     file.Content,
 			NewFilename: file.Filename,
