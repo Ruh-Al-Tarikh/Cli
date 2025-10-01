@@ -664,13 +664,6 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 		return nil
 	}
 
-	if users == nil {
-		users = []string{}
-	}
-	if teams == nil {
-		teams = []string{}
-	}
-
 	path := fmt.Sprintf(
 		"repos/%s/%s/pulls/%d/requested_reviewers",
 		url.PathEscape(repo.RepoOwner()),
@@ -678,8 +671,8 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 		prNumber,
 	)
 	body := struct {
-		Reviewers     []string `json:"reviewers"`
-		TeamReviewers []string `json:"team_reviewers"`
+		Reviewers     []string `json:"reviewers,omitempty"`
+		TeamReviewers []string `json:"team_reviewers,omitempty"`
 	}{
 		Reviewers:     users,
 		TeamReviewers: teams,
