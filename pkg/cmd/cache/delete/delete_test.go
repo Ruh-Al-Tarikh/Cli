@@ -235,12 +235,29 @@ func TestDeleteRun(t *testing.T) {
 					httpmock.QueryMatcher("DELETE", "repos/OWNER/REPO/actions/caches", url.Values{
 						"key": []string{"a weird＿cache+key"},
 					}),
-					// The response is a JSON object but we don't need it here.
-					httpmock.StatusStringResponse(200, "{}"),
+					httpmock.JSONResponse(shared.CachePayload{
+						TotalCount: 1,
+					}),
 				)
 			},
 			tty:        true,
 			wantStdout: "✓ Deleted 1 cache from OWNER/REPO\n",
+		},
+		{
+			name: "deletes multiple caches by key",
+			opts: DeleteOptions{Identifier: "shared-cache-key"},
+			stubs: func(reg *httpmock.Registry) {
+				reg.Register(
+					httpmock.QueryMatcher("DELETE", "repos/OWNER/REPO/actions/caches", url.Values{
+						"key": []string{"shared-cache-key"},
+					}),
+					httpmock.JSONResponse(shared.CachePayload{
+						TotalCount: 5,
+					}),
+				)
+			},
+			tty:        true,
+			wantStdout: "✓ Deleted 5 caches from OWNER/REPO\n",
 		},
 		{
 			name: "no caches to delete when deleting all",
@@ -299,8 +316,9 @@ func TestDeleteRun(t *testing.T) {
 						"key": []string{"cache-key"},
 						"ref": []string{"refs/heads/main"},
 					}),
-					// The response is a JSON object but we don't need it here.
-					httpmock.StatusStringResponse(200, "{}"),
+					httpmock.JSONResponse(shared.CachePayload{
+						TotalCount: 1,
+					}),
 				)
 			},
 			tty:        true,
@@ -315,12 +333,30 @@ func TestDeleteRun(t *testing.T) {
 						"key": []string{"cache-key"},
 						"ref": []string{"refs/heads/main"},
 					}),
-					// The response is a JSON object but we don't need it here.
-					httpmock.StatusStringResponse(200, "{}"),
+					httpmock.JSONResponse(shared.CachePayload{
+						TotalCount: 1,
+					}),
 				)
 			},
 			tty:        false,
 			wantStdout: "",
+		},
+		{
+			name: "deletes multiple caches by key and ref",
+			opts: DeleteOptions{Identifier: "cache-key", Ref: "refs/heads/feature"},
+			stubs: func(reg *httpmock.Registry) {
+				reg.Register(
+					httpmock.QueryMatcher("DELETE", "repos/OWNER/REPO/actions/caches", url.Values{
+						"key": []string{"cache-key"},
+						"ref": []string{"refs/heads/feature"},
+					}),
+					httpmock.JSONResponse(shared.CachePayload{
+						TotalCount: 3,
+					}),
+				)
+			},
+			tty:        true,
+			wantStdout: "✓ Deleted 3 caches from OWNER/REPO\n",
 		},
 		{
 			// As of now, the API returns HTTP 404 for invalid or non-existent refs.

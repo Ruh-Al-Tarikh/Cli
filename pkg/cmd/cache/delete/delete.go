@@ -164,33 +164,18 @@ func deleteCaches(opts *DeleteOptions, client *api.Client, repo ghrepo.Interface
 	cs := opts.IO.ColorScheme()
 	repoName := ghrepo.FullName(repo)
 	opts.IO.StartProgressIndicator()
-	base := fmt.Sprintf("repos/%s/actions/caches", repoName)
 
+	totalDeleted := 0
 	for _, cache := range toDelete {
-		// TODO(babakks): We use two different endpoints here which have different
-		// response schemas:
-		//
-		//   1. /repos/OWNER/REPO/actions/caches/ID (for deleting by cache ID)
-		//      - returns HTTP 204 (NO CONTENT) on success
-		//   2. /repos/OWNER/REPO/actions/caches?key=KEY[&ref=REF] (for deleting by cache key, and optionally a ref)
-		//      - returns HTTP 200 on success including information about the deleted caches
-		//
-		// So, if/when we decided to use the data in the response body we need
-		// to be careful with parsing. Probably want to split these API calls
-		// into separate functions.
-
-		path := ""
+		var count int
+		var err error
 		if id, ok := parseCacheID(cache); ok {
-			path = fmt.Sprintf("%s/%d", base, id)
+			err = deleteCacheByID(client, repo, id)
+			count = 1
 		} else {
-			path = fmt.Sprintf("%s?key=%s", base, url.QueryEscape(cache))
-
-			if opts.Ref != "" {
-				path += fmt.Sprintf("&ref=%s", url.QueryEscape(opts.Ref))
-			}
+			count, err = deleteCacheByKey(client, repo, cache, opts.Ref)
 		}
 
-		err := client.REST(repo.RepoHost(), "DELETE", path, nil, nil)
 		if err != nil {
 			var httpErr api.HTTPError
 			if errors.As(err, &httpErr) {
@@ -207,15 +192,43 @@ func deleteCaches(opts *DeleteOptions, client *api.Client, repo ghrepo.Interface
 			opts.IO.StopProgressIndicator()
 			return err
 		}
+
+		totalDeleted += count
 	}
 
 	opts.IO.StopProgressIndicator()
 
 	if opts.IO.IsStdoutTTY() {
-		fmt.Fprintf(opts.IO.Out, "%s Deleted %s from %s\n", cs.SuccessIcon(), text.Pluralize(len(toDelete), "cache"), repoName)
+		fmt.Fprintf(opts.IO.Out, "%s Deleted %s from %s\n", cs.SuccessIcon(), text.Pluralize(totalDeleted, "cache"), repoName)
 	}
 
 	return nil
+}
+
+func deleteCacheByID(client *api.Client, repo ghrepo.Interface, id int) error {
+	// returns HTTP 204 (NO CONTENT) on success
+	path := fmt.Sprintf("repos/%s/actions/caches/%d", ghrepo.FullName(repo), id)
+	return client.REST(repo.RepoHost(), "DELETE", path, nil, nil)
+}
+
+// deleteCacheByKey deletes cache entries by given key (and optional ref) and
+// returns the number of deleted entries.
+//
+// Note that a key/ref combination does not necessarily map to a single cache
+// entry. There may be more than one entries with the same key/ref combination,
+// but those entries will have different IDs.
+func deleteCacheByKey(client *api.Client, repo ghrepo.Interface, key, ref string) (int, error) {
+	path := fmt.Sprintf("repos/%s/actions/caches?key=%s", ghrepo.FullName(repo), url.QueryEscape(key))
+	if ref != "" {
+		path += fmt.Sprintf("&ref=%s", url.QueryEscape(ref))
+	}
+	var payload shared.CachePayload
+	err := client.REST(repo.RepoHost(), "DELETE", path, nil, &payload)
+	if err != nil {
+		return 0, err
+	}
+
+	return payload.TotalCount, nil
 }
 
 func parseCacheID(arg string) (int, bool) {
