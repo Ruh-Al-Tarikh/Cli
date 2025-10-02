@@ -354,7 +354,7 @@ func Test_editRun(t *testing.T) {
 	tests := []struct {
 		name      string
 		input     *EditOptions
-		httpStubs func(*httpmock.Registry, *testing.T)
+		httpStubs func(*testing.T, *httpmock.Registry)
 		stdout    string
 		stderr    string
 	}{
@@ -411,7 +411,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true, teamReviewers: false, assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
 				mockPullRequestUpdateActorAssignees(reg)
@@ -469,7 +469,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
 				mockPullRequestUpdateActorAssignees(reg)
@@ -542,7 +542,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true, teamReviewers: false, assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
 				mockPullRequestRemoveReviewers(reg)
@@ -565,7 +565,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				// reviewers only (users), no team reviewers fetched
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true})
 				// explicitly assert that no OrganizationTeamList query occurs
@@ -587,7 +587,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				// reviewer add includes team but non-interactive Add/Remove provided -> no team fetch
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true})
 				reg.Exclude(t, httpmock.GraphQL(`query OrganizationTeamList\b`))
@@ -613,7 +613,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true})
 				reg.Exclude(t, httpmock.GraphQL(`query OrganizationTeamList\b`))
 				mockPullRequestUpdate(reg)
@@ -633,7 +633,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				// reviewers only (users), no team reviewers fetched
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true})
 				// explicitly assert that no OrganizationTeamList query occurs
@@ -679,7 +679,7 @@ func Test_editRun(t *testing.T) {
 				Fetcher:         testFetcher{},
 				EditorRetriever: testEditorRetriever{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true, teamReviewers: true, assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
 				mockPullRequestUpdateActorAssignees(reg)
@@ -723,7 +723,7 @@ func Test_editRun(t *testing.T) {
 				Fetcher:         testFetcher{},
 				EditorRetriever: testEditorRetriever{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				// interactive but reviewers not chosen; need everything except reviewers/teams
 				mockRepoMetadata(reg, mockRepoMetadataOptions{assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
@@ -780,7 +780,7 @@ func Test_editRun(t *testing.T) {
 				Fetcher:         testFetcher{},
 				EditorRetriever: testEditorRetriever{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				mockRepoMetadata(reg, mockRepoMetadataOptions{reviewers: true, teamReviewers: true, assignees: true, labels: true, projects: true, milestones: true})
 				mockPullRequestUpdate(reg)
 				mockPullRequestRemoveReviewers(reg)
@@ -827,7 +827,7 @@ func Test_editRun(t *testing.T) {
 				Fetcher:         testFetcher{},
 				EditorRetriever: testEditorRetriever{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				reg.Register(
 					httpmock.GraphQL(`query RepositoryAssignableActors\b`),
 					httpmock.StringResponse(`
@@ -874,7 +874,7 @@ func Test_editRun(t *testing.T) {
 				},
 				Fetcher: testFetcher{},
 			},
-			httpStubs: func(reg *httpmock.Registry, t *testing.T) {
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
 				// Notice there is no call to mockReplaceActorsForAssignable()
 				// and no GraphQL call to RepositoryAssignableActors below.
 				reg.Register(
@@ -902,7 +902,7 @@ func Test_editRun(t *testing.T) {
 
 			reg := &httpmock.Registry{}
 			defer reg.Verify(t)
-			tt.httpStubs(reg, t)
+			tt.httpStubs(t, reg)
 
 			httpClient := func() (*http.Client, error) { return &http.Client{Transport: reg}, nil }
 			baseRepo := func() (ghrepo.Interface, error) { return ghrepo.New("OWNER", "REPO"), nil }
