@@ -113,20 +113,12 @@ func revertRun(opts *RevertOptions) error {
 
 	revertPR, err := api.PullRequestRevert(apiClient, baseRepo, params)
 	if err != nil {
+		fmt.Fprintf(opts.IO.ErrOut, "%s %s\n", cs.FailureIcon(), err)
 		return fmt.Errorf("API call failed: %w", err)
 	}
 
-	fmt.Fprintf(
-		opts.IO.ErrOut,
-		"%s Created pull request %s#%d (%s) that reverts %s#%d (%s)\n",
-		cs.SuccessIconWithColor(cs.Green),
-		ghrepo.FullName(baseRepo),
-		revertPR.Number,
-		revertPR.Title,
-		ghrepo.FullName(baseRepo),
-		pr.Number,
-		pr.Title,
-	)
-
+	if revertPR != nil {
+		fmt.Fprintln(opts.IO.Out, revertPR.URL)
+	}
 	return nil
 }
