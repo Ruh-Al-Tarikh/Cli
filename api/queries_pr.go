@@ -782,7 +782,7 @@ func PullRequestRevert(client *Client, repo ghrepo.Interface, params githubv4.Re
 		return nil, err
 	}
 	revertPR := &mutation.RevertPullRequest.RevertPullRequest
-	return revertPR, err
+	return revertPR, nil
 }
 
 func ConvertPullRequestToDraft(client *Client, repo ghrepo.Interface, pr *PullRequest) error {
