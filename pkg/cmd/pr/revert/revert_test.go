@@ -53,7 +53,7 @@ func TestPRRevert(t *testing.T) {
 	http := &httpmock.Registry{}
 	defer http.Verify(t)
 
-	shared.RunCommandFinder("123", &api.PullRequest{
+	shared.StubFinderForRunCommandStyleTests(t, "123", &api.PullRequest{
 		ID:     "SOME-ID",
 		Number: 123,
 		State:  "MERGED",
@@ -86,7 +86,7 @@ func TestPRRevert_notRevertable(t *testing.T) {
 	http := &httpmock.Registry{}
 	defer http.Verify(t)
 
-	shared.RunCommandFinder("123", &api.PullRequest{
+	shared.StubFinderForRunCommandStyleTests(t, "123", &api.PullRequest{
 		ID:     "SOME-ID",
 		Number: 123,
 		State:  "OPEN",
@@ -103,7 +103,7 @@ func TestPRRevert_withAllOpts(t *testing.T) {
 	http := &httpmock.Registry{}
 	defer http.Verify(t)
 
-	shared.RunCommandFinder("123", &api.PullRequest{
+	shared.StubFinderForRunCommandStyleTests(t, "123", &api.PullRequest{
 		ID:     "SOME-ID",
 		Number: 123,
 		State:  "MERGED",
