@@ -488,6 +488,7 @@ func Test_createRun(t *testing.T) {
 				}
 			},
 			wantStdout: heredoc.Doc(`
+				Displaying session logs for job job123. Press Ctrl+C to stop.
 				(rendered:) <raw-logs-one>
 				(rendered:) <raw-logs-two>
 			`),
