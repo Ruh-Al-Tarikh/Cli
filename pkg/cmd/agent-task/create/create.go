@@ -166,6 +166,8 @@ func createRun(opts *CreateOptions) error {
 	}
 
 	if opts.Follow {
+		opts.IO.StopProgressIndicator()
+		fmt.Fprintf(opts.IO.Out, "Displaying session logs for job %s. Press Ctrl+C to stop.\n", job.ID)
 		return followLogs(opts, client, job.SessionID)
 	}
 
