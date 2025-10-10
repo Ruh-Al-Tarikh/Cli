@@ -127,7 +127,6 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, 
 	cmd.AddCommand(versionCmd.NewCmdVersion(f, version, buildDate))
 	cmd.AddCommand(accessibilityCmd.NewCmdAccessibility(f))
 	cmd.AddCommand(actionsCmd.NewCmdActions(f))
-	cmd.AddCommand(agentTaskCmd.NewCmdAgentTask(f))
 	cmd.AddCommand(aliasCmd.NewCmdAlias(f))
 	cmd.AddCommand(authCmd.NewCmdAuth(f))
 	cmd.AddCommand(attestationCmd.NewCmdAttestation(f))
@@ -150,6 +149,7 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, 
 	repoResolvingCmdFactory := *f
 	repoResolvingCmdFactory.BaseRepo = factory.SmartBaseRepoFunc(f)
 
+	cmd.AddCommand(agentTaskCmd.NewCmdAgentTask(&repoResolvingCmdFactory))
 	cmd.AddCommand(browseCmd.NewCmdBrowse(&repoResolvingCmdFactory, nil))
 	cmd.AddCommand(prCmd.NewCmdPR(&repoResolvingCmdFactory))
 	cmd.AddCommand(orgCmd.NewCmdOrg(&repoResolvingCmdFactory))
