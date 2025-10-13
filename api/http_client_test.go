@@ -18,9 +18,10 @@ import (
 
 func TestNewHTTPClient(t *testing.T) {
 	type args struct {
-		config         tokenGetter
-		appVersion     string
-		logVerboseHTTP bool
+		config             tokenGetter
+		appVersion         string
+		logVerboseHTTP     bool
+		skipDefaultHeaders bool
 	}
 	tests := []struct {
 		name       string
@@ -118,6 +119,34 @@ func TestNewHTTPClient(t *testing.T) {
 				* Request took <duration>
 			`),
 		},
+		{
+			name: "respect skip default headers option",
+			args: args{
+				appVersion:         "v1.2.3",
+				logVerboseHTTP:     true,
+				skipDefaultHeaders: true,
+			},
+			host: "github.com",
+			wantHeader: map[string][]string{
+				"accept":        nil,
+				"authorization": nil,
+				"content-type":  nil,
+				"user-agent":    {"GitHub CLI v1.2.3"},
+			},
+			wantStderr: heredoc.Doc(`
+				* Request at <time>
+				* Request to http://<host>:<port>
+				> GET / HTTP/1.1
+				> Host: github.com
+				> Time-Zone: <timezone>
+				> User-Agent: GitHub CLI v1.2.3
+
+				< HTTP/1.1 204 No Content
+				< Date: <time>
+
+				* Request took <duration>
+			`),
+		},
 	}
 
 	var gotReq *http.Request
@@ -131,10 +160,11 @@ func TestNewHTTPClient(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ios, _, _, stderr := iostreams.Test()
 			client, err := NewHTTPClient(HTTPClientOptions{
-				AppVersion:     tt.args.appVersion,
-				Config:         tt.args.config,
-				Log:            ios.ErrOut,
-				LogVerboseHTTP: tt.args.logVerboseHTTP,
+				AppVersion:         tt.args.appVersion,
+				Config:             tt.args.config,
+				Log:                ios.ErrOut,
+				LogVerboseHTTP:     tt.args.logVerboseHTTP,
+				SkipDefaultHeaders: tt.args.skipDefaultHeaders,
 			})
 			require.NoError(t, err)
 
