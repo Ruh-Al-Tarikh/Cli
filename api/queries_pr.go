@@ -770,7 +770,11 @@ func PullRequestRevert(client *Client, repo ghrepo.Interface, params githubv4.Re
 			PullRequest struct {
 				ID githubv4.ID
 			}
-			RevertPullRequest PullRequest
+			RevertPullRequest struct {
+				ID     string
+				Number int
+				URL    string
+			}
 		} `graphql:"revertPullRequest(input: $input)"`
 	}
 
@@ -781,7 +785,13 @@ func PullRequestRevert(client *Client, repo ghrepo.Interface, params githubv4.Re
 	if err != nil {
 		return nil, err
 	}
-	revertPR := &mutation.RevertPullRequest.RevertPullRequest
+	pr := &mutation.RevertPullRequest.RevertPullRequest
+	revertPR := &PullRequest{
+		ID:     pr.ID,
+		Number: pr.Number,
+		URL:    pr.URL,
+	}
+
 	return revertPR, nil
 }
 

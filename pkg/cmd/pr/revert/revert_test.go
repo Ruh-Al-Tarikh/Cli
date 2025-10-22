@@ -105,7 +105,6 @@ func TestPRRevert_acceptedIdentifierFormats(t *testing.T) {
 				"ID": "SOME-ID"
 			}, "revertPullRequest": {
                "ID": "NEW-ID",
-			   "Title": "Revert PR title",
                "Number": 456,
                "URL": "https://github.com/OWNER/REPO/pull/456"
             } } } }
@@ -162,7 +161,6 @@ func TestPRRevert_withTitleAndBody(t *testing.T) {
 				"ID": "SOME-ID"
 			}, "revertPullRequest": {
                "ID": "NEW-ID",
-			   "Title": "Revert PR title",
                "Number": 456,
                "URL": "https://github.com/OWNER/REPO/pull/456"
             } } } }
@@ -200,7 +198,6 @@ func TestPRRevert_withDraft(t *testing.T) {
 				"ID": "SOME-ID"
 			}, "revertPullRequest": {
                "ID": "NEW-ID",
-			   "Title": "Revert PR title",
                "Number": 456,
                "URL": "https://github.com/OWNER/REPO/pull/456"
             } } } }
@@ -266,7 +263,6 @@ func TestPRRevert_multipleInvocations(t *testing.T) {
 				"ID": "SOME-ID"
 			}, "revertPullRequest": {
                "ID": "NEW-ID",
-			   "Title": "Revert PR title",
                "Number": 456,
                "URL": "https://github.com/OWNER/REPO/pull/456"
             } } } }
@@ -297,7 +293,6 @@ func TestPRRevert_multipleInvocations(t *testing.T) {
 				"ID": "SOME-ID"
 			}, "revertPullRequest": {
                "ID": "NEW-ID",
-			   "Title": "Revert PR title",
                "Number": 456,
                "URL": "https://github.com/OWNER/REPO/pull/456"
             } } } }
