@@ -75,9 +75,12 @@ func NewLiveSigstoreVerifier(config SigstoreConfig) (*LiveSigstoreVerifier, erro
 	if !config.NoPublicGood {
 		publicGoodVerifier, err := newPublicGoodVerifier(config.TUFMetadataDir, config.HttpClient)
 		if err != nil {
-			return nil, err
+			// Log warning but continue - PGI unavailability should not block GitHub attestation verification
+			config.Logger.VerbosePrintf("Warning: failed to initialize Public Good verifier: %v\n", err)
+			config.Logger.VerbosePrintf("Continuing without Public Good Instance verification\n")
+		} else {
+			liveVerifier.PublicGood = publicGoodVerifier
 		}
-		liveVerifier.PublicGood = publicGoodVerifier
 	}
 	github, err := newGitHubVerifier(config.TrustDomain, config.TUFMetadataDir, config.HttpClient)
 	if err != nil {
@@ -205,6 +208,9 @@ func (v *LiveSigstoreVerifier) chooseVerifier(issuer string) (*verify.Verifier, 
 	case PublicGoodIssuerOrg:
 		if v.NoPublicGood {
 			return nil, fmt.Errorf("detected public good instance but requested verification without public good instance")
+		}
+		if v.PublicGood == nil {
+			return nil, fmt.Errorf("public good verifier is not available (initialization may have failed)")
 		}
 		return v.PublicGood, nil
 	case GitHubIssuerOrg:
