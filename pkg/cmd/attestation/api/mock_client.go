@@ -46,9 +46,6 @@ func OnGetByDigestSuccess(params FetchParams) ([]*Attestation, error) {
 		if params.PredicateType == "release" {
 			return []*Attestation{&att3}, nil
 		}
-		if params.PredicateType == "https://in-toto.io/attestation/release/v0.1" {
-			attestations = append(attestations, &att3)
-		}
 		return FilterAttestations(params.PredicateType, attestations)
 	}
 
