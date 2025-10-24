@@ -56,3 +56,14 @@ func TestGetBundleIssuer(t *testing.T) {
 	// Integration tests cover the actual functionality
 	t.Skip("getBundleIssuer requires a valid bundle which needs integration test setup")
 }
+
+func TestLiveSigstoreVerifier_noVerifierSet(t *testing.T) {
+	verifier := &LiveSigstoreVerifier{
+		Logger:       io.NewTestHandler(),
+		NoPublicGood: true,
+		PublicGood:   nil,
+		GitHub:       nil,
+	}
+
+	require.True(t, verifier.noVerifierSet())
+}
