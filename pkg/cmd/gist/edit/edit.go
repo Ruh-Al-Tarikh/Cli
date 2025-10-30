@@ -260,14 +260,17 @@ func editRun(opts *EditOptions) error {
 		}
 
 		// If the file is truncated, fetch the full content
+		// but only if it hasn't already been edited in this session
 		file := gist.Files[filename]
 		if file.Truncated {
-			fullContent, err := shared.GetRawGistFile(client, file.RawURL)
-			if err != nil {
-				return err
-			}
+			if _, alreadyEdited := filesToUpdate[filename]; !alreadyEdited {
+				fullContent, err := shared.GetRawGistFile(client, file.RawURL)
+				if err != nil {
+					return err
+				}
 
-			gistFile.Content = fullContent
+				gistFile.Content = fullContent
+			}
 		}
 
 		var text string
