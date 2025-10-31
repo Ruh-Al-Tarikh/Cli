@@ -112,7 +112,7 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 	cmd.Flags().StringVarP(&opts.ProblemStatementFile, "from-file", "F", "", "Read task description from `file` (use \"-\" to read from standard input)")
 	cmd.Flags().StringVarP(&opts.BaseBranch, "base", "b", "", "Base branch for the pull request (use default branch if not provided)")
 	cmd.Flags().BoolVar(&opts.Follow, "follow", false, "Follow agent session logs")
-	cmd.Flags().StringVar(&opts.CustomAgent, "custom-agent", "", "Use a custom agent for the task")
+	cmd.Flags().StringVar(&opts.CustomAgent, "custom-agent", "", "Use a custom agent for the task. e.g., use 'my-agent' for the 'my-agent.md' agent")
 
 	return cmd
 }
