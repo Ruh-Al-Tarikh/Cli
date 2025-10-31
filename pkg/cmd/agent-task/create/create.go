@@ -104,6 +104,9 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 
 			# Select a different base branch for the PR
 			$ gh agent-task create "fix errors" --base branch
+
+			# Create a task using the custom agent defined in '.github/agents/my-agent.md'
+			$ gh agent-task create "build me a new app" --custom-agent my-agent
 		`),
 	}
 
