@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -90,8 +91,10 @@ func (c *CAPIClient) CreateJob(ctx context.Context, owner, repo, problemStatemen
 	}
 	defer res.Body.Close()
 
+	body, _ := io.ReadAll(res.Body)
+
 	var j Job
-	if err := json.NewDecoder(res.Body).Decode(&j); err != nil {
+	if err := json.NewDecoder(bytes.NewReader(body)).Decode(&j); err != nil {
 		if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK { // accept 201 or 200
 			// This happens when there's an error like unauthorized (401).
 			statusText := fmt.Sprintf("%d %s", res.StatusCode, http.StatusText(res.StatusCode))
@@ -101,11 +104,22 @@ func (c *CAPIClient) CreateJob(ctx context.Context, owner, repo, problemStatemen
 	}
 
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK { // accept 201 or 200
-		if j.ErrorInfo != nil {
-			return nil, fmt.Errorf("failed to create job: %s", j.ErrorInfo.Message)
-		}
 		statusText := fmt.Sprintf("%d %s", res.StatusCode, http.StatusText(res.StatusCode))
-		return nil, fmt.Errorf("failed to create job: %s", statusText)
+
+		// If the response has error embeded, we can use that.
+		// TODO: Does this really ever happen?
+		if j.ErrorInfo != nil {
+			return nil, fmt.Errorf("failed to create job: %s: %s", statusText, j.ErrorInfo.Message)
+		}
+
+		// If the response doesn't have error embeded,
+		// try to decode the response itself as a jobError.
+		var errInfo JobError
+		if err := json.NewDecoder(bytes.NewReader(body)).Decode(&errInfo); err != nil {
+			return nil, fmt.Errorf("failed to create job: %s", statusText)
+		}
+
+		return nil, fmt.Errorf("failed to create job: %s: %s", statusText, errInfo.Message)
 	}
 
 	return &j, nil
