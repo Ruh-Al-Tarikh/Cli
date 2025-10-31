@@ -112,7 +112,7 @@ func (c *CAPIClient) CreateJob(ctx context.Context, owner, repo, problemStatemen
 			return nil, fmt.Errorf("failed to create job: %s: %s", statusText, j.ErrorInfo.Message)
 		}
 
-		// If the response doesn't have error embeded,
+		// If the response doesn't have error embedded,
 		// try to decode the response itself as a jobError.
 		var errInfo JobError
 		if err := json.NewDecoder(bytes.NewReader(body)).Decode(&errInfo); err != nil {
