@@ -186,7 +186,7 @@ func (s searcher) Issues(query Query) (IssuesResult, error) {
 }
 
 // search makes a single-page REST search request for code, commits, issues, prs, or repos,
-// and return the link header from response for further pagination calls. If the link header
+// and returns the link header from response for further pagination calls. If the link header
 // is not set on the response, empty string is returned.
 //
 // The result argument is populated with the following information:
