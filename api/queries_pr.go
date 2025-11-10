@@ -638,10 +638,10 @@ func AddPullRequestReviews(client *Client, repo ghrepo.Interface, prNumber int, 
 	}
 
 	// The API requires empty arrays instead of null values
-	if len(users) == 0 {
+	if users == nil {
 		users = []string{}
 	}
-	if len(teams) == 0 {
+	if teams == nil {
 		teams = []string{}
 	}
 
@@ -673,10 +673,10 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 	}
 
 	// The API requires empty arrays instead of null values
-	if len(users) == 0 {
+	if users == nil {
 		users = []string{}
 	}
-	if len(teams) == 0 {
+	if teams == nil {
 		teams = []string{}
 	}
 
