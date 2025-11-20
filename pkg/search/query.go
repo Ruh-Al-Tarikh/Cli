@@ -148,11 +148,16 @@ func (q Query) AdvancedIssueSearchString() string {
 		keywords = strings.Join(formatKeywords(q.Keywords), " ")
 	}
 
+	if qualifiers == "" && keywords == "" {
+		return ""
+	}
+
 	if qualifiers != "" && keywords != "" {
 		// We should surround keywords with brackets to avoid leaking of any operators, especially "OR"s.
 		return fmt.Sprintf("( %s ) %s", keywords, qualifiers)
 	}
-	if qualifiers == "" {
+
+	if keywords != "" {
 		return keywords
 	}
 	return qualifiers
