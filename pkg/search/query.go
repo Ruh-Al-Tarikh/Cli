@@ -21,14 +21,15 @@ type Query struct {
 	// as needed. This is useful when the input can be supplied as a list of
 	// search keywords.
 	//
-	// This field is mutually exclusive with KeywordsVerbatim.
+	// This field is overridden by ImmutableKeywords.
 	Keywords []string
-	// KeywordsVerbatim holds the search keywords as a single string, and will
+
+	// ImmutableKeywords holds the search keywords as a single string, and will
 	// be treated as is (e.g. no additional quoting). This is useful when the
 	// input is meant to be taken verbatim from the user.
 	//
-	// This field is mutually exclusive with Keywords.
-	KeywordsVerbatim string
+	// This field takes precedence over Keywords.
+	ImmutableKeywords string
 
 	Kind       string
 	Limit      int
@@ -117,8 +118,8 @@ type Qualifiers struct {
 func (q Query) StandardSearchString() string {
 	qualifiers := formatQualifiers(q.Qualifiers, nil)
 	var keywords []string
-	if q.KeywordsVerbatim != "" {
-		keywords = []string{q.KeywordsVerbatim}
+	if q.ImmutableKeywords != "" {
+		keywords = []string{q.ImmutableKeywords}
 	} else if ks := formatKeywords(q.Keywords); len(ks) > 0 {
 		keywords = ks
 	}
@@ -143,7 +144,7 @@ func (q Query) StandardSearchString() string {
 // The advanced syntax is documented at https://github.blog/changelog/2025-03-06-github-issues-projects-api-support-for-issues-advanced-search-and-more
 func (q Query) AdvancedIssueSearchString() string {
 	qualifiers := strings.Join(formatQualifiers(q.Qualifiers, formatAdvancedIssueSearch), " ")
-	keywords := q.KeywordsVerbatim
+	keywords := q.ImmutableKeywords
 	if keywords == "" {
 		keywords = strings.Join(formatKeywords(q.Keywords), " ")
 	}

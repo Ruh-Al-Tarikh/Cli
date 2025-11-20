@@ -75,29 +75,29 @@ func TestStandardSearchString(t *testing.T) {
 			out: `topic:"quote qualifier"`,
 		},
 		{
-			name: "respects verbatim keywords",
+			name: "respects immutable keywords",
 			query: Query{
-				KeywordsVerbatim: "verbatim keyword that should be left as is",
+				ImmutableKeywords: "immutable keyword that should be left as is",
 			},
-			out: `verbatim keyword that should be left as is`,
+			out: `immutable keyword that should be left as is`,
 		},
 		{
-			name: "respects verbatim keywords, with qualifiers",
+			name: "respects immutable keywords, with qualifiers",
 			query: Query{
-				KeywordsVerbatim: "verbatim keyword that should be left as is",
+				ImmutableKeywords: "immutable keyword that should be left as is",
 				Qualifiers: Qualifiers{
 					Topic: []string{"quote qualifier"},
 				},
 			},
-			out: `verbatim keyword that should be left as is topic:"quote qualifier"`,
+			out: `immutable keyword that should be left as is topic:"quote qualifier"`,
 		},
 		{
-			name: "prioritises verbatim keywords over keywords slice",
+			name: "prioritises immutable keywords over keywords slice",
 			query: Query{
-				Keywords:         []string{"foo", "bar"},
-				KeywordsVerbatim: "verbatim keyword",
+				Keywords:          []string{"foo", "bar"},
+				ImmutableKeywords: "immutable keyword",
 			},
-			out: `verbatim keyword`,
+			out: `immutable keyword`,
 		},
 	}
 	for _, tt := range tests {
@@ -141,29 +141,29 @@ func TestAdvancedIssueSearchString(t *testing.T) {
 			out: `label:"quote qualifier"`,
 		},
 		{
-			name: "respects verbatim keywords",
+			name: "respects immutable keywords",
 			query: Query{
-				KeywordsVerbatim: "verbatim keyword that should be left as is",
+				ImmutableKeywords: "immutable keyword that should be left as is",
 			},
-			out: `verbatim keyword that should be left as is`,
+			out: `immutable keyword that should be left as is`,
 		},
 		{
-			name: "respects verbatim keywords, with qualifiers",
+			name: "respects immutable keywords, with qualifiers",
 			query: Query{
-				KeywordsVerbatim: "verbatim keyword that should be left as is",
+				ImmutableKeywords: "immutable keyword that should be left as is",
 				Qualifiers: Qualifiers{
 					Topic: []string{"quote qualifier"},
 				},
 			},
-			out: `( verbatim keyword that should be left as is ) topic:"quote qualifier"`,
+			out: `( immutable keyword that should be left as is ) topic:"quote qualifier"`,
 		},
 		{
-			name: "prioritises verbatim keywords over keywords slice",
+			name: "prioritises immutable keywords over keywords slice",
 			query: Query{
-				Keywords:         []string{"foo", "bar"},
-				KeywordsVerbatim: "verbatim keyword",
+				Keywords:          []string{"foo", "bar"},
+				ImmutableKeywords: "immutable keyword",
 			},
-			out: `verbatim keyword`,
+			out: `immutable keyword`,
 		},
 		{
 			name: "unused qualifiers should not appear in query",

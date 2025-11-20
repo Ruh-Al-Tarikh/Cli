@@ -222,7 +222,7 @@ func SearchQueryBuild(options FilterOptions, advancedIssueSearchSyntax bool) str
 			Is:        []string{is},
 			Type:      options.Entity,
 		},
-		KeywordsVerbatim: options.Search,
+		ImmutableKeywords: options.Search,
 	}
 
 	if !advancedIssueSearchSyntax {
