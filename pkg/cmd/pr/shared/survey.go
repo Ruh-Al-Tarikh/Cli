@@ -35,11 +35,11 @@ const (
 )
 
 type Prompt interface {
-	Input(string, string) (string, error)
-	Select(string, string, []string) (int, error)
-	MarkdownEditor(string, string, bool) (string, error)
-	Confirm(string, bool) (bool, error)
-	MultiSelect(string, []string, []string) ([]int, error)
+	Input(prompt string, defaultValue string) (string, error)
+	Select(prompt string, defaultValue string, options []string) (int, error)
+	MarkdownEditor(prompt string, defaultValue string, blankAllowed bool) (string, error)
+	Confirm(prompt string, defaultValue bool) (bool, error)
+	MultiSelect(prompt string, defaults []string, options []string) ([]int, error)
 }
 
 func ConfirmIssueSubmission(p Prompt, allowPreview bool, allowMetadata bool) (Action, error) {
