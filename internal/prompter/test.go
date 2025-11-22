@@ -25,10 +25,11 @@ func NewMockPrompter(t *testing.T) *MockPrompter {
 type MockPrompter struct {
 	t *testing.T
 	ghPrompter.PrompterMock
-	authTokenStubs       []authTokenStub
-	confirmDeletionStubs []confirmDeletionStub
-	inputHostnameStubs   []inputHostnameStub
-	markdownEditorStubs  []markdownEditorStub
+	authTokenStubs             []authTokenStub
+	confirmDeletionStubs       []confirmDeletionStub
+	inputHostnameStubs         []inputHostnameStub
+	markdownEditorStubs        []markdownEditorStub
+	multiSelectWithSearchStubs []multiSelectWithSearchStub
 }
 
 type authTokenStub struct {
@@ -47,6 +48,12 @@ type inputHostnameStub struct {
 type markdownEditorStub struct {
 	prompt string
 	fn     func(string, string, bool) (string, error)
+}
+
+type multiSelectWithSearchStub struct {
+	prompt       string
+	searchPrompt string
+	fn           func(string, string, []string, []string) ([]string, error)
 }
 
 func (m *MockPrompter) AuthToken() (string, error) {
@@ -90,6 +97,16 @@ func (m *MockPrompter) MarkdownEditor(prompt, defaultValue string, blankAllowed 
 		return "", NoSuchPromptErr(prompt)
 	}
 	return s.fn(prompt, defaultValue, blankAllowed)
+}
+
+func (m *MockPrompter) MultiSelectWithSearch(prompt, searchPrompt string, defaults []string, persistentOptions []string, searchFunc func(string) ([]string, []string, int, error)) ([]string, error) {
+	var s multiSelectWithSearchStub
+	if len(m.multiSelectWithSearchStubs) == 0 {
+		return nil, NoSuchPromptErr(prompt)
+	}
+	s = m.multiSelectWithSearchStubs[0]
+	m.multiSelectWithSearchStubs = m.multiSelectWithSearchStubs[1:len(m.multiSelectWithSearchStubs)]
+	return s.fn(prompt, searchPrompt, defaults, persistentOptions)
 }
 
 func (m *MockPrompter) RegisterAuthToken(stub func() (string, error)) {

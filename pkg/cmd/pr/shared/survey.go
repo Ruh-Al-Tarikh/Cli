@@ -40,6 +40,7 @@ type Prompt interface {
 	MarkdownEditor(prompt string, defaultValue string, blankAllowed bool) (string, error)
 	Confirm(prompt string, defaultValue bool) (bool, error)
 	MultiSelect(prompt string, defaults []string, options []string) ([]int, error)
+	MultiSelectWithSearch(prompt, searchPrompt string, defaults []string, persistentOptions []string, searchFunc func(string) ([]string, []string, int, error)) ([]string, error)
 }
 
 func ConfirmIssueSubmission(p Prompt, allowPreview bool, allowMetadata bool) (Action, error) {
@@ -207,6 +208,7 @@ func MetadataSurvey(p Prompt, io *iostreams.IOStreams, baseRepo ghrepo.Interface
 	// Populate the list of selectable assignees and their default selections.
 	// This logic maps the default assignees from `state` to the corresponding actors or users
 	// so that the correct display names are preselected in the prompt.
+	// TODO: KW21 This will need to go away since we're going to dynamically load assignees via search.
 	var assignees []string
 	var assigneesDefault []string
 	if state.ActorAssignees {
@@ -264,6 +266,9 @@ func MetadataSurvey(p Prompt, io *iostreams.IOStreams, baseRepo ghrepo.Interface
 			fmt.Fprintln(io.ErrOut, "warning: no available reviewers")
 		}
 	}
+	// TODO: KW21 This will need to change to use MultiSelectWithSearch once it's implemented.
+	// MultiSelectWithSearch will return the selected strings directly instead of indices,
+	// so the logic here will need to be updated accordingly.
 	if isChosen("Assignees") {
 		if len(assignees) > 0 {
 			selected, err := p.MultiSelect("Assignees", assigneesDefault, assignees)
