@@ -292,6 +292,10 @@ func editRun(opts *EditOptions) error {
 
 	apiClient := api.NewClientFromHTTP(httpClient)
 
+	// Wire up search functions for assignees and reviewers.
+	// TODO: Wire up reviewer search func.
+	editable.AssigneeSearchFunc = assigneeSearchFunc(apiClient, repo, pr.ID)
+
 	opts.IO.StartProgressIndicator()
 	err = opts.Fetcher.EditableOptionsFetch(apiClient, repo, &editable, opts.Detector.ProjectsV1())
 	opts.IO.StopProgressIndicator()
@@ -329,6 +333,38 @@ func editRun(opts *EditOptions) error {
 	fmt.Fprintln(opts.IO.Out, pr.URL)
 
 	return nil
+}
+
+func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, assignableID string) func(string) ([]string, []string, int, error) {
+	searchFunc := func(input string) ([]string, []string, int, error) {
+		actors, err := api.SuggestedAssignableActors(
+			apiClient,
+			repo,
+			assignableID,
+			input)
+		if err != nil {
+			return nil, nil, 0, err
+		}
+
+		var logins []string
+		var displayNames []string
+
+		for _, a := range actors {
+			if a.Login() != "" {
+				logins = append(logins, a.Login())
+			} else {
+				continue
+			}
+
+			if a.DisplayName() != "" {
+				displayNames = append(displayNames, a.DisplayName())
+			} else {
+				displayNames = append(displayNames, a.Login())
+			}
+		}
+		return logins, displayNames, 0, nil
+	}
+	return searchFunc
 }
 
 func updatePullRequest(httpClient *http.Client, repo ghrepo.Interface, id string, number int, editable shared.Editable) error {

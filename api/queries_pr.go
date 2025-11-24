@@ -701,6 +701,114 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 	return client.REST(repo.RepoHost(), "DELETE", path, buf, nil)
 }
 
+// SuggestedAssignableActors fetches up to 10 suggested actors for a specific assignable
+// (Issue or PullRequest) node ID. `assignableID` is the GraphQL node ID for the Issue/PR.
+// If query is empty, the query variable is passed as null to omit filtering.
+func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, error) {
+	type responseData struct {
+		Viewer struct {
+			ID    string
+			Login string
+			Name  string
+		} `graphql:"viewer"`
+		Node struct {
+			Issue struct {
+				SuggestedActors struct {
+					Nodes []struct {
+						User struct {
+							ID       string
+							Login    string
+							Name     string
+							TypeName string `graphql:"__typename"`
+						} `graphql:"... on User"`
+						Bot struct {
+							ID       string
+							Login    string
+							TypeName string `graphql:"__typename"`
+						} `graphql:"... on Bot"`
+					}
+				} `graphql:"suggestedActors(first: 10, query: $query)"`
+			} `graphql:"... on Issue"`
+			PullRequest struct {
+				SuggestedActors struct {
+					Nodes []struct {
+						User struct {
+							ID       string
+							Login    string
+							Name     string
+							TypeName string `graphql:"__typename"`
+						} `graphql:"... on User"`
+						Bot struct {
+							ID       string
+							Login    string
+							TypeName string `graphql:"__typename"`
+						} `graphql:"... on Bot"`
+					}
+				} `graphql:"suggestedActors(first: 10, query: $query)"`
+			} `graphql:"... on PullRequest"`
+		} `graphql:"node(id: $id)"`
+	}
+
+	variables := map[string]interface{}{
+		"id": githubv4.ID(assignableID),
+	}
+	if query != "" {
+		variables["query"] = githubv4.String(query)
+	} else {
+		variables["query"] = (*githubv4.String)(nil)
+	}
+
+	var result responseData
+	if err := client.Query(repo.RepoHost(), "SuggestedAssignableActors", &result, variables); err != nil {
+		return nil, err
+	}
+
+	var nodes []struct {
+		User struct {
+			ID       string
+			Login    string
+			Name     string
+			TypeName string `graphql:"__typename"`
+		} `graphql:"... on User"`
+		Bot struct {
+			ID       string
+			Login    string
+			TypeName string `graphql:"__typename"`
+		} `graphql:"... on Bot"`
+	}
+
+	if result.Node.PullRequest.SuggestedActors.Nodes != nil {
+		nodes = result.Node.PullRequest.SuggestedActors.Nodes
+	} else if result.Node.Issue.SuggestedActors.Nodes != nil {
+		nodes = result.Node.Issue.SuggestedActors.Nodes
+	}
+
+	actors := make([]AssignableActor, 0, len(nodes)+1) // +1 in case we add viewer
+	viewer := result.Viewer
+	viewerLogin := viewer.Login
+	viewerIncluded := false
+
+	for _, n := range nodes {
+		if n.User.TypeName == "User" && n.User.Login != "" {
+			actors = append(actors, AssignableUser{id: n.User.ID, login: n.User.Login, name: n.User.Name})
+			if query == "" && viewerLogin != "" && n.User.Login == viewerLogin {
+				viewerIncluded = true
+			}
+		} else if n.Bot.TypeName == "Bot" && n.Bot.Login != "" {
+			actors = append(actors, AssignableBot{id: n.Bot.ID, login: n.Bot.Login})
+			if query == "" && viewerLogin != "" && n.Bot.Login == viewerLogin {
+				viewerIncluded = true
+			}
+		}
+	}
+
+	// When query is blank, append viewer if not already present.
+	if query == "" && viewerLogin != "" && !viewerIncluded {
+		actors = append(actors, AssignableUser{id: viewer.ID, login: viewer.Login, name: viewer.Name})
+	}
+	return actors, nil
+}
+
 func UpdatePullRequestBranch(client *Client, repo ghrepo.Interface, params githubv4.UpdatePullRequestBranchInput) error {
 	var mutation struct {
 		UpdatePullRequestBranch struct {
