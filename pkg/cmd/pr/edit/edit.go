@@ -294,7 +294,7 @@ func editRun(opts *EditOptions) error {
 
 	// Wire up search functions for assignees and reviewers.
 	// TODO: Wire up reviewer search func.
-	editable.AssigneeSearchFunc = assigneeSearchFunc(apiClient, repo, pr.ID)
+	editable.AssigneeSearchFunc = assigneeSearchFunc(apiClient, repo, &editable, pr.ID)
 
 	opts.IO.StartProgressIndicator()
 	err = opts.Fetcher.EditableOptionsFetch(apiClient, repo, &editable, opts.Detector.ProjectsV1())
@@ -335,7 +335,7 @@ func editRun(opts *EditOptions) error {
 	return nil
 }
 
-func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, assignableID string) func(string) ([]string, []string, int, error) {
+func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, editable *shared.Editable, assignableID string) func(string) ([]string, []string, int, error) {
 	searchFunc := func(input string) ([]string, []string, int, error) {
 		actors, err := api.SuggestedAssignableActors(
 			apiClient,
@@ -361,6 +361,10 @@ func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, assignable
 			} else {
 				displayNames = append(displayNames, a.Login())
 			}
+
+			// Update the assignable actors metadata in the editable struct
+			// so that updating the PR later can resolve the actor ID.
+			editable.Metadata.AssignableActors = append(editable.Metadata.AssignableActors, a)
 		}
 		return logins, displayNames, 0, nil
 	}
