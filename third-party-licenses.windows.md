@@ -226,7 +226,7 @@ Some packages may only be included on certain architectures or operating systems
 - [golang.org/x/sync](https://pkg.go.dev/golang.org/x/sync) ([BSD-3-Clause](https://cs.opensource.google/go/x/sync/+/v0.19.0:LICENSE))
 - [golang.org/x/sys](https://pkg.go.dev/golang.org/x/sys) ([BSD-3-Clause](https://cs.opensource.google/go/x/sys/+/v0.38.0:LICENSE))
 - [golang.org/x/term](https://pkg.go.dev/golang.org/x/term) ([BSD-3-Clause](https://cs.opensource.google/go/x/term/+/v0.37.0:LICENSE))
-- [golang.org/x/text](https://pkg.go.dev/golang.org/x/text) ([BSD-3-Clause](https://cs.opensource.google/go/x/text/+/v0.31.0:LICENSE))
+- [golang.org/x/text](https://pkg.go.dev/golang.org/x/text) ([BSD-3-Clause](https://cs.opensource.google/go/x/text/+/v0.32.0:LICENSE))
 - [golang.org/x/time/rate](https://pkg.go.dev/golang.org/x/time/rate) ([BSD-3-Clause](https://cs.opensource.google/go/x/time/+/v0.12.0:LICENSE))
 - [google.golang.org/api](https://pkg.go.dev/google.golang.org/api) ([BSD-3-Clause](https://github.com/googleapis/google-api-go-client/blob/v0.248.0/LICENSE))
 - [google.golang.org/api/internal/third_party/uritemplates](https://pkg.go.dev/google.golang.org/api/internal/third_party/uritemplates) ([BSD-3-Clause](https://github.com/googleapis/google-api-go-client/blob/v0.248.0/internal/third_party/uritemplates/LICENSE))
