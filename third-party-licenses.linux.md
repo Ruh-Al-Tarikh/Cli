@@ -75,7 +75,7 @@ Some packages may only be included on certain architectures or operating systems
 - [github.com/fsnotify/fsnotify](https://pkg.go.dev/github.com/fsnotify/fsnotify) ([BSD-3-Clause](https://github.com/fsnotify/fsnotify/blob/v1.9.0/LICENSE))
 - [github.com/gabriel-vasile/mimetype](https://pkg.go.dev/github.com/gabriel-vasile/mimetype) ([MIT](https://github.com/gabriel-vasile/mimetype/blob/v1.4.11/LICENSE))
 - [github.com/gdamore/encoding](https://pkg.go.dev/github.com/gdamore/encoding) ([Apache-2.0](https://github.com/gdamore/encoding/blob/v1.0.1/LICENSE))
-- [github.com/gdamore/tcell/v2](https://pkg.go.dev/github.com/gdamore/tcell/v2) ([Apache-2.0](https://github.com/gdamore/tcell/blob/v2.13.2/LICENSE))
+- [github.com/gdamore/tcell/v2](https://pkg.go.dev/github.com/gdamore/tcell/v2) ([Apache-2.0](https://github.com/gdamore/tcell/blob/v2.13.4/LICENSE))
 - [github.com/go-chi/chi/v5](https://pkg.go.dev/github.com/go-chi/chi/v5) ([MIT](https://github.com/go-chi/chi/blob/v5.2.3/LICENSE))
 - [github.com/go-jose/go-jose/v4](https://pkg.go.dev/github.com/go-jose/go-jose/v4) ([Apache-2.0](https://github.com/go-jose/go-jose/blob/v4.1.3/LICENSE))
 - [github.com/go-jose/go-jose/v4/json](https://pkg.go.dev/github.com/go-jose/go-jose/v4/json) ([BSD-3-Clause](https://github.com/go-jose/go-jose/blob/v4.1.3/json/LICENSE))
