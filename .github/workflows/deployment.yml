@@ -213,7 +213,7 @@ jobs:
             MSI_VERSION="$(cut -d_ -f2 <<<"$MSI_NAME" | cut -d- -f1)"
             case "$MSI_NAME" in
             *_386 )
-              source_dir="$PWD/dist/windows_windows_386"
+              source_dir="$PWD/dist/windows_windows_386_sse2"
               platform="x86"
               ;;
             *_amd64 )
@@ -221,7 +221,7 @@ jobs:
               platform="x64"
               ;;
             *_arm64 )
-              source_dir="$PWD/dist/windows_windows_arm64"
+              source_dir="$PWD/dist/windows_windows_arm64_v8.0"
               platform="arm64"
               ;;
             * )
