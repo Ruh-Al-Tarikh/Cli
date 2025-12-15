@@ -76,7 +76,8 @@ archives:
       - LICENSE
 
 nfpms: #build:linux
-  - license: MIT
+  - ids: [linux]
+    license: MIT
     maintainer: GitHub
     homepage: https://github.com/cli/cli
     bindir: /usr
