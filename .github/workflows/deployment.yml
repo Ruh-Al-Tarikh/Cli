@@ -318,6 +318,7 @@ jobs:
         uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: "dist/gh_*"
+          create-storage-record: false # (default: true)
       - name: Run createrepo
         env:
           GPG_SIGN: ${{ inputs.environment == 'production' }}
