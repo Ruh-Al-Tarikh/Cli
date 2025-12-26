@@ -21,6 +21,7 @@ func TestNewCmdSetDefault(t *testing.T) {
 	tests := []struct {
 		name     string
 		gitStubs func(*run.CommandStubber)
+		remotes  func() (context.Remotes, error)
 		input    string
 		output   SetDefaultOptions
 		wantErr  bool
@@ -43,11 +44,13 @@ func TestNewCmdSetDefault(t *testing.T) {
 			output: SetDefaultOptions{Repo: ghrepo.New("cli", "cli")},
 		},
 		{
-			name:     "invalid repo argument",
-			gitStubs: func(cs *run.CommandStubber) {},
-			input:    "some_invalid_format",
-			wantErr:  true,
-			errMsg:   `expected the "[HOST/]OWNER/REPO" format, got "some_invalid_format"`,
+			name: "invalid repo argument",
+			gitStubs: func(cs *run.CommandStubber) {
+				cs.Register(`git rev-parse --git-dir`, 0, ".git")
+			},
+			input:   "some_invalid_format",
+			wantErr: true,
+			errMsg:  `expected the "[HOST/]OWNER/REPO" format, got "some_invalid_format"`,
 		},
 		{
 			name: "view flag",
@@ -74,6 +77,22 @@ func TestNewCmdSetDefault(t *testing.T) {
 			wantErr: true,
 			errMsg:  "must be run from inside a git repository",
 		},
+		{
+			name: "remote name argument",
+			gitStubs: func(cs *run.CommandStubber) {
+				cs.Register(`git rev-parse --git-dir`, 0, ".git")
+			},
+			remotes: func() (context.Remotes, error) {
+				return context.Remotes{
+					{
+						Remote: &git.Remote{Name: "origin"},
+						Repo:   ghrepo.New("OWNER", "REPO"),
+					},
+				}, nil
+			},
+			input:  "origin",
+			output: SetDefaultOptions{Repo: ghrepo.New("OWNER", "REPO")},
+		},
 	}
 
 	for _, tt := range tests {
@@ -84,6 +103,7 @@ func TestNewCmdSetDefault(t *testing.T) {
 		f := &cmdutil.Factory{
 			IOStreams: io,
 			GitClient: &git.Client{GitPath: "/fake/path/to/git"},
+			Remotes:   tt.remotes,
 		}
 
 		var gotOpts *SetDefaultOptions
