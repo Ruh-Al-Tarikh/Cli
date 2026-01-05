@@ -184,7 +184,7 @@ jobs:
             CertificateProfileName = "GitHubInc"
             CodeSigningAccountName = "GitHubInc"
             CorrelationId = $Env:CORRELATION_ID
-            Endpoint =  "https://wus.codesigning.azure.net/"
+            Endpoint =  "https://wus3.codesigning.azure.net/"
           } | ConvertTo-Json | Out-File -FilePath $Env:METADATA_PATH
 
       # Azure Code Signing leverages the environment variables for secrets that complement the metadata.json
