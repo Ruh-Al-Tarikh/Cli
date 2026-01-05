@@ -176,7 +176,7 @@ jobs:
           METADATA_PATH: ${{ runner.temp }}\acs\metadata.json
         run: |
           # Download Azure Code Signing client containing the DLL needed for signtool in script/sign
-          Invoke-WebRequest -Uri https://www.nuget.org/api/v2/package/Azure.CodeSigning.Client/1.0.43 -OutFile $Env:ACS_ZIP -Verbose
+          Invoke-WebRequest -Uri https://www.nuget.org/api/v2/package/Microsoft.Trusted.Signing.Client/1.0.95 -OutFile $Env:ACS_ZIP -Verbose
           Expand-Archive $Env:ACS_ZIP -Destination $Env:ACS_DIR -Force -Verbose
 
           # Generate metadata file for signtool, used in signing box .exe and .msi
