@@ -61,8 +61,7 @@ jobs:
       - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
-        run: |
-          git tag "$TAG_NAME"
+        run: git tag "$TAG_NAME"
       - name: Build release binaries
         env:
           TAG_NAME: ${{ inputs.tag_name }}
@@ -123,8 +122,7 @@ jobs:
       - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
-        run: |
-          git tag "$TAG_NAME"
+        run: git tag "$TAG_NAME"
       - name: Build release binaries
         env:
           TAG_NAME: ${{ inputs.tag_name }}
@@ -206,8 +204,7 @@ jobs:
       - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
-        run: |
-          git tag "$TAG_NAME"
+        run: git tag "$TAG_NAME"
       # Azure Code Signing leverages the environment variables for secrets that complement the metadata.json
       # file generated above (AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID)
       # For more information, see https://learn.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential?view=azure-dotnet
