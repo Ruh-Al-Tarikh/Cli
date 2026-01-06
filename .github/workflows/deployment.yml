@@ -58,7 +58,7 @@ jobs:
           install-only: true
       # We temporarily create a tag on HEAD to make the right version embedded
       # in the built binaries, BUT we don't push it to the remote.
-      - name: Tag
+      - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
         run: |
@@ -120,7 +120,7 @@ jobs:
           install-only: true
       # We temporarily create a tag on HEAD to make the right version embedded
       # in the built binaries, BUT we don't push it to the remote.
-      - name: Tag
+      - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
         run: |
@@ -203,7 +203,7 @@ jobs:
 
       # We temporarily create a tag on HEAD to make the right version embedded
       # in the built binaries, BUT we don't push it to the remote.
-      - name: Tag
+      - name: Create temporary tag
         env:
           TAG_NAME: ${{ inputs.tag_name }}
         run: |
