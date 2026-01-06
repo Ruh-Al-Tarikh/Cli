@@ -202,6 +202,7 @@ jobs:
       # We temporarily create a tag on HEAD to make the right version embedded
       # in the built binaries, BUT we don't push it to the remote.
       - name: Create temporary tag
+        shell: bash
         env:
           TAG_NAME: ${{ inputs.tag_name }}
         run: git tag "$TAG_NAME"
