@@ -3,7 +3,6 @@ version: "2"
 linters:
   default: none
   enable:
-    # Already enabled
     - asasalint # checks for pass []any as any in variadic func(...any)
     - asciicheck # checks that your code does not contain non-ASCII identifiers
     - bidichk # checks for dangerous unicode character sequences
