@@ -89,21 +89,23 @@ func NewCmdSetDefault(f *cmdutil.Factory, runF func(*SetDefaultOptions) error) *
 			}
 
 			if len(args) > 0 {
-				// First, try to find argument as a git remote name
-				if !strings.Contains(args[0], "/") && opts.Remotes != nil {
-					if remotes, err := opts.Remotes(); err == nil {
-						if remote, err := remotes.FindByName(args[0]); err == nil {
-							opts.Repo = remote.Repo
-						}
+				var err error
+				opts.Repo, err = ghrepo.FromFullName(args[0])
+				if err != nil {
+					if opts.Remotes == nil {
+						return fmt.Errorf("given arg is not a valid repo or git remote: %w", err)
 					}
-				}
-				// If not found as remote name, try parsing as OWNER/REPO
-				if opts.Repo == nil {
-					var err error
-					opts.Repo, err = ghrepo.FromFullName(args[0])
-					if err != nil {
-						return err
+
+					remotes, remoteErr := opts.Remotes()
+					if remoteErr != nil {
+						return remoteErr
 					}
+
+					remote, findErr := remotes.FindByName(args[0])
+					if findErr != nil {
+						return fmt.Errorf("given arg is not a valid repo or git remote: %w", err)
+					}
+					opts.Repo = remote.Repo
 				}
 			}
 

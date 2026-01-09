@@ -50,7 +50,7 @@ func TestNewCmdSetDefault(t *testing.T) {
 			},
 			input:   "some_invalid_format",
 			wantErr: true,
-			errMsg:  `expected the "[HOST/]OWNER/REPO" format, got "some_invalid_format"`,
+			errMsg:  `given arg is not a valid repo or git remote: expected the "[HOST/]OWNER/REPO" format, got "some_invalid_format"`,
 		},
 		{
 			name: "view flag",
@@ -91,6 +91,22 @@ func TestNewCmdSetDefault(t *testing.T) {
 				}, nil
 			},
 			input:  "origin",
+			output: SetDefaultOptions{Repo: ghrepo.New("OWNER", "REPO")},
+		},
+		{
+			name: "repo argument despite remote name matching owner/repo",
+			gitStubs: func(cs *run.CommandStubber) {
+				cs.Register(`git rev-parse --git-dir`, 0, ".git")
+			},
+			remotes: func() (context.Remotes, error) {
+				return context.Remotes{
+					{
+						Remote: &git.Remote{Name: "OWNER/REPO"},
+						Repo:   ghrepo.New("OTHER", "REPO"),
+					},
+				}, nil
+			},
+			input:  "OWNER/REPO",
 			output: SetDefaultOptions{Repo: ghrepo.New("OWNER", "REPO")},
 		},
 	}
