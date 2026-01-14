@@ -92,10 +92,6 @@ func NewCmdSetDefault(f *cmdutil.Factory, runF func(*SetDefaultOptions) error) *
 				var err error
 				opts.Repo, err = ghrepo.FromFullName(args[0])
 				if err != nil {
-					if opts.Remotes == nil {
-						return fmt.Errorf("given arg is not a valid repo or git remote: %w", err)
-					}
-
 					remotes, remoteErr := opts.Remotes()
 					if remoteErr != nil {
 						return remoteErr

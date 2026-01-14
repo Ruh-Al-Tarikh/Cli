@@ -116,10 +116,17 @@ func TestNewCmdSetDefault(t *testing.T) {
 		io.SetStdoutTTY(true)
 		io.SetStdinTTY(true)
 		io.SetStderrTTY(true)
+		remotesFunc := tt.remotes
+		if remotesFunc == nil {
+			remotesFunc = func() (context.Remotes, error) {
+				return context.Remotes{}, nil
+			}
+		}
+
 		f := &cmdutil.Factory{
 			IOStreams: io,
 			GitClient: &git.Client{GitPath: "/fake/path/to/git"},
-			Remotes:   tt.remotes,
+			Remotes:   remotesFunc,
 		}
 
 		var gotOpts *SetDefaultOptions
