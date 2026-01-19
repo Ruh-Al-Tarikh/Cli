@@ -1,4 +1,4 @@
-package download
+package zip
 
 import (
 	"archive/zip"
@@ -19,7 +19,7 @@ func Test_extractZip(t *testing.T) {
 	require.NoError(t, err)
 	defer zipFile.Close()
 
-	err = extractZip(&zipFile.Reader, extractPath)
+	err = ExtractZip(&zipFile.Reader, extractPath)
 	require.NoError(t, err)
 
 	_, err = os.Stat(filepath.Join(extractPath.String(), "src", "main.go"))

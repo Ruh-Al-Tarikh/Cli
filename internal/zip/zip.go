@@ -1,4 +1,4 @@
-package download
+package zip
 
 import (
 	"archive/zip"
@@ -17,7 +17,11 @@ const (
 	execMode os.FileMode = 0755
 )
 
-func extractZip(zr *zip.Reader, destDir safepaths.Absolute) error {
+// ExtractZip extracts the contents of a zip archive to destDir.
+// Files that would result in path traversal are silently skipped.
+// Files that would produce any other error cause the extraction to be aborted,
+// and the error is returned.
+func ExtractZip(zr *zip.Reader, destDir safepaths.Absolute) error {
 	for _, zf := range zr.File {
 		fpath, err := destDir.Join(zf.Name)
 		if err != nil {
