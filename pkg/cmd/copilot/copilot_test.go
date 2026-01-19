@@ -566,7 +566,7 @@ func TestDownloadCopilot(t *testing.T) {
 
 		checksum := sha256.Sum256(archive)
 		checksumHex := hex.EncodeToString(checksum[:])
-		archiveName := fmt.Sprintf("copilot-%s-%s.zip", runtime.GOOS, archString())
+		archiveName := fmt.Sprintf("copilot-%s-%s.zip", "win32", archString())
 		checksumFile := fmt.Sprintf("%s  %s\n", checksumHex, archiveName)
 
 		reg := &httpmock.Registry{}
