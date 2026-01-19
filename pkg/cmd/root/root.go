@@ -19,6 +19,7 @@ import (
 	codespaceCmd "github.com/cli/cli/v2/pkg/cmd/codespace"
 	completionCmd "github.com/cli/cli/v2/pkg/cmd/completion"
 	configCmd "github.com/cli/cli/v2/pkg/cmd/config"
+	copilotCmd "github.com/cli/cli/v2/pkg/cmd/copilot"
 	extensionCmd "github.com/cli/cli/v2/pkg/cmd/extension"
 	"github.com/cli/cli/v2/pkg/cmd/factory"
 	gistCmd "github.com/cli/cli/v2/pkg/cmd/gist"
@@ -131,7 +132,6 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, 
 	cmd.AddCommand(authCmd.NewCmdAuth(f))
 	cmd.AddCommand(attestationCmd.NewCmdAttestation(f))
 	cmd.AddCommand(configCmd.NewCmdConfig(f))
-	cmd.AddCommand(creditsCmd.NewCmdCredits(f, nil))
 	cmd.AddCommand(gistCmd.NewCmdGist(f))
 	cmd.AddCommand(gpgKeyCmd.NewCmdGPGKey(f))
 	cmd.AddCommand(completionCmd.NewCmdCompletion(f.IOStreams))
@@ -140,10 +140,14 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, 
 	cmd.AddCommand(secretCmd.NewCmdSecret(f))
 	cmd.AddCommand(variableCmd.NewCmdVariable(f))
 	cmd.AddCommand(sshKeyCmd.NewCmdSSHKey(f))
-	cmd.AddCommand(statusCmd.NewCmdStatus(f, nil))
 	cmd.AddCommand(codespaceCmd.NewCmdCodespace(f))
 	cmd.AddCommand(projectCmd.NewCmdProject(f))
 	cmd.AddCommand(previewCmd.NewCmdPreview(f))
+
+	// Root commands with standalone functionality and no subcommands
+	cmd.AddCommand(copilotCmd.NewCmdCopilot(f, nil))
+	cmd.AddCommand(statusCmd.NewCmdStatus(f, nil))
+	cmd.AddCommand(creditsCmd.NewCmdCredits(f, nil))
 
 	// below here at the commands that require the "intelligent" BaseRepo resolver
 	repoResolvingCmdFactory := *f
