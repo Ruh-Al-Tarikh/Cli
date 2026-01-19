@@ -183,6 +183,13 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, 
 	em := f.ExtensionManager
 	for _, e := range em.List() {
 		extensionCmd := NewCmdExtension(io, em, e, nil)
+		// Don't register an extension command if it would
+		// conflict with a core command.
+		_, _, err := cmd.Find([]string{extensionCmd.Name()})
+		if err == nil {
+			continue
+		}
+
 		cmd.AddCommand(extensionCmd)
 	}
 
