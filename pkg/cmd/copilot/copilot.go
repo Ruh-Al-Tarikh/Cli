@@ -218,6 +218,10 @@ func findCopilotBinary() string {
 // It returns the path to the installed Copilot binary.
 func downloadCopilot(httpClient *http.Client, ios *iostreams.IOStreams, installDir, localPath string) (string, error) {
 	platform := runtime.GOOS
+	if platform == "windows" {
+		platform = "win32"
+	}
+
 	arch := runtime.GOARCH
 	if arch == "amd64" {
 		arch = "x64"
@@ -231,7 +235,7 @@ func downloadCopilot(httpClient *http.Client, ios *iostreams.IOStreams, installD
 	var archiveName string
 	var isZip bool
 	switch platform {
-	case "windows":
+	case "win32":
 		archiveName = fmt.Sprintf("copilot-%s-%s.zip", platform, arch)
 		archiveURL = fmt.Sprintf("https://github.com/github/copilot-cli/releases/latest/download/%s", archiveName)
 		isZip = true
@@ -244,13 +248,13 @@ func downloadCopilot(httpClient *http.Client, ios *iostreams.IOStreams, installD
 
 	checksumsURL := "https://github.com/github/copilot-cli/releases/latest/download/SHA256SUMS.txt"
 
-	ios.StartProgressIndicatorWithLabel(fmt.Sprintf("Downloading Copilot CLI from %s", archiveURL))
-	defer ios.StopProgressIndicator()
-
 	expectedChecksum, err := fetchExpectedChecksum(httpClient, checksumsURL, archiveName)
 	if err != nil {
 		return "", fmt.Errorf("failed to fetch checksums: %w", err)
 	}
+
+	ios.StartProgressIndicatorWithLabel(fmt.Sprintf("Downloading Copilot CLI from %s", archiveURL))
+	defer ios.StopProgressIndicator()
 
 	resp, err := httpClient.Get(archiveURL)
 	if err != nil {
