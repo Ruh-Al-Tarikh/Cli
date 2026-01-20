@@ -352,9 +352,9 @@ func TestFetchExpectedChecksum(t *testing.T) {
 		)
 
 		client := &http.Client{Transport: reg}
-		_, err := fetchExpectedChecksum(client, "https://example.com/checksums", "copilot-windows-x64.zip")
+		_, err := fetchExpectedChecksum(client, "https://example.com/checksums", "copilot-win32-x64.zip")
 		require.Error(t, err, "expected error for missing archive")
-		require.Equal(t, "checksum not found for copilot-windows-x64.zip", err.Error(), "unexpected error")
+		require.Equal(t, "checksum not found for copilot-win32-x64.zip", err.Error(), "unexpected error")
 	})
 
 	t.Run("handles single space separator", func(t *testing.T) {
