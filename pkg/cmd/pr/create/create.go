@@ -170,12 +170,9 @@ func (r forkableRefs) UnqualifiedHeadRef() string {
 // For cross-repository PRs (e.g., from a fork), the qualified head ref will contain
 // an owner prefix (owner:branch), so even if branch names match, they refer to different repos.
 func isSameRef(refs creationRefs) bool {
-	// If the qualified head ref contains ":", it's a cross-repo PR (e.g., from a fork)
-	// and we should allow it even if branch names are the same
 	if strings.Contains(refs.QualifiedHeadRef(), ":") {
 		return false
 	}
-	// Same repository: check if branch names are identical
 	return refs.UnqualifiedHeadRef() == refs.BaseRef()
 }
 
@@ -380,7 +377,6 @@ func createRun(opts *CreateOptions) error {
 		return err
 	}
 
-	// Check if head and base refs point to the same ref in the same repository
 	if isSameRef(ctx.PRRefs) {
 		return fmt.Errorf("head branch %q is the same as base branch %q, cannot create a pull request", ctx.PRRefs.UnqualifiedHeadRef(), ctx.PRRefs.BaseRef())
 	}
