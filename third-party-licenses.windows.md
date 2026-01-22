@@ -146,7 +146,7 @@ Some packages may only be included on certain architectures or operating systems
 - [github.com/sigstore/rekor-tiles/v2](https://pkg.go.dev/github.com/sigstore/rekor-tiles/v2) ([Apache-2.0](https://github.com/sigstore/rekor-tiles/blob/v2.0.1/LICENSE))
 - [github.com/sigstore/rekor/pkg](https://pkg.go.dev/github.com/sigstore/rekor/pkg) ([Apache-2.0](https://github.com/sigstore/rekor/blob/v1.4.3/LICENSE))
 - [github.com/sigstore/sigstore-go/pkg](https://pkg.go.dev/github.com/sigstore/sigstore-go/pkg) ([Apache-2.0](https://github.com/sigstore/sigstore-go/blob/v1.1.4/LICENSE))
-- [github.com/sigstore/sigstore/pkg](https://pkg.go.dev/github.com/sigstore/sigstore/pkg) ([Apache-2.0](https://github.com/sigstore/sigstore/blob/v1.10.0/LICENSE))
+- [github.com/sigstore/sigstore/pkg](https://pkg.go.dev/github.com/sigstore/sigstore/pkg) ([Apache-2.0](https://github.com/sigstore/sigstore/blob/v1.10.4/LICENSE))
 - [github.com/sigstore/timestamp-authority/v2/pkg/verification](https://pkg.go.dev/github.com/sigstore/timestamp-authority/v2/pkg/verification) ([Apache-2.0](https://github.com/sigstore/timestamp-authority/blob/v2.0.3/LICENSE))
 - [github.com/sirupsen/logrus](https://pkg.go.dev/github.com/sirupsen/logrus) ([MIT](https://github.com/sirupsen/logrus/blob/v1.9.3/LICENSE))
 - [github.com/spf13/cast](https://pkg.go.dev/github.com/spf13/cast) ([MIT](https://github.com/spf13/cast/blob/v1.10.0/LICENSE))
@@ -184,7 +184,7 @@ Some packages may only be included on certain architectures or operating systems
 - [google.golang.org/genproto/googleapis/api](https://pkg.go.dev/google.golang.org/genproto/googleapis/api) ([Apache-2.0](https://github.com/googleapis/go-genproto/blob/3a174f9686a8/googleapis/api/LICENSE))
 - [google.golang.org/genproto/googleapis/rpc/status](https://pkg.go.dev/google.golang.org/genproto/googleapis/rpc/status) ([Apache-2.0](https://github.com/googleapis/go-genproto/blob/f26f9409b101/googleapis/rpc/LICENSE))
 - [google.golang.org/grpc](https://pkg.go.dev/google.golang.org/grpc) ([Apache-2.0](https://github.com/grpc/grpc-go/blob/v1.77.0/LICENSE))
-- [google.golang.org/protobuf](https://pkg.go.dev/google.golang.org/protobuf) ([BSD-3-Clause](https://github.com/protocolbuffers/protobuf-go/blob/v1.36.10/LICENSE))
+- [google.golang.org/protobuf](https://pkg.go.dev/google.golang.org/protobuf) ([BSD-3-Clause](https://github.com/protocolbuffers/protobuf-go/blob/v1.36.11/LICENSE))
 - [gopkg.in/yaml.v3](https://pkg.go.dev/gopkg.in/yaml.v3) ([MIT](https://github.com/go-yaml/yaml/blob/v3.0.1/LICENSE))
 
 [cli/cli]: https://github.com/cli/cli
