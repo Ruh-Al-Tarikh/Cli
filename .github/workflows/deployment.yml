@@ -281,7 +281,7 @@ jobs:
       - name: Checkout cli/cli
         uses: actions/checkout@v6
       - name: Merge built artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
       - name: Checkout documentation site
         uses: actions/checkout@v6
         with:
