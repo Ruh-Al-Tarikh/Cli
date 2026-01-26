@@ -748,12 +748,8 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 	}
 
 	variables := map[string]interface{}{
-		"id": githubv4.ID(assignableID),
-	}
-	if query != "" {
-		variables["query"] = githubv4.String(query)
-	} else {
-		variables["query"] = (*githubv4.String)(nil)
+		"id":    githubv4.ID(assignableID),
+		"query": githubv4.String(query),
 	}
 
 	var result responseData
