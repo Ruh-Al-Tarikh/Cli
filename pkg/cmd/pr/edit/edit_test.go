@@ -843,8 +843,6 @@ func Test_editRun(t *testing.T) {
 				EditorRetriever: testEditorRetriever{},
 			},
 			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
-				// No RepositoryAssignableActors query needed - searchFunc handles dynamic fetching
-				// (metadata populated in test mock)
 				mockPullRequestUpdate(reg)
 				reg.Register(
 					httpmock.GraphQL(`mutation ReplaceActorsForAssignable\b`),
