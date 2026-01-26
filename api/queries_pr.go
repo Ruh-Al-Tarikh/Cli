@@ -780,29 +780,16 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 		nodes = result.Node.Issue.SuggestedActors.Nodes
 	}
 
-	actors := make([]AssignableActor, 0, len(nodes)+1) // +1 in case we add viewer
-	viewer := result.Viewer
-	viewerLogin := viewer.Login
-	viewerIncluded := false
+	actors := make([]AssignableActor, 0, len(nodes))
 
 	for _, n := range nodes {
 		if n.TypeName == "User" && n.User.Login != "" {
 			actors = append(actors, AssignableUser{id: n.User.ID, login: n.User.Login, name: n.User.Name})
-			if query == "" && viewerLogin != "" && n.User.Login == viewerLogin {
-				viewerIncluded = true
-			}
 		} else if n.TypeName == "Bot" && n.Bot.Login != "" {
 			actors = append(actors, AssignableBot{id: n.Bot.ID, login: n.Bot.Login})
-			if query == "" && viewerLogin != "" && n.Bot.Login == viewerLogin {
-				viewerIncluded = true
-			}
 		}
 	}
 
-	// When query is blank, append viewer if not already present.
-	if query == "" && viewerLogin != "" && !viewerIncluded {
-		actors = append(actors, AssignableUser{id: viewer.ID, login: viewer.Login, name: viewer.Name})
-	}
 	return actors, nil
 }
 
