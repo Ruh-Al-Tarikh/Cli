@@ -706,11 +706,6 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 // If query is empty, the query variable is passed as null to omit filtering.
 func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, error) {
 	type responseData struct {
-		Viewer struct {
-			ID    string
-			Login string
-			Name  string
-		} `graphql:"viewer"`
 		Node struct {
 			Issue struct {
 				SuggestedActors struct {
