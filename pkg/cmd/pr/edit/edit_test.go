@@ -899,6 +899,55 @@ func Test_editRun(t *testing.T) {
 			stdout: "https://github.com/OWNER/REPO/pull/123\n",
 		},
 		{
+			name: "interactive GHES uses legacy assignee flow without search",
+			input: &EditOptions{
+				Detector:    &fd.DisabledDetectorMock{},
+				SelectorArg: "123",
+				Finder: shared.NewMockFinder("123", &api.PullRequest{
+					URL: "https://github.com/OWNER/REPO/pull/123",
+					Assignees: api.Assignees{
+						Nodes:      []api.GitHubUser{{Login: "octocat", ID: "OCTOID"}},
+						TotalCount: 1,
+					},
+				}, ghrepo.New("OWNER", "REPO")),
+				Interactive: true,
+				Surveyor: testSurveyor{
+					fieldsToEdit: func(e *shared.Editable) error {
+						e.Assignees.Edited = true
+						return nil
+					},
+					editFields: func(e *shared.Editable, _ string) error {
+						require.False(t, e.Assignees.ActorAssignees)
+						require.Nil(t, e.AssigneeSearchFunc)
+						require.Contains(t, e.Assignees.Options, "monalisa")
+						require.Contains(t, e.Assignees.Options, "hubot")
+
+						e.Assignees.Value = []string{"monalisa", "hubot"}
+						return nil
+					},
+				},
+				Fetcher:         testFetcher{},
+				EditorRetriever: testEditorRetriever{},
+			},
+			httpStubs: func(t *testing.T, reg *httpmock.Registry) {
+				reg.Exclude(t, httpmock.GraphQL(`query RepositoryAssignableActors\b`))
+				reg.Register(
+					httpmock.GraphQL(`query RepositoryAssignableUsers\b`),
+					httpmock.StringResponse(`
+					{ "data": { "repository": { "assignableUsers": {
+						"nodes": [
+							{ "login": "hubot", "id": "HUBOTID" },
+							{ "login": "monalisa", "id": "MONAID" }
+						],
+						"pageInfo": { "hasNextPage": false }
+					} } } }
+					`))
+				reg.Exclude(t, httpmock.GraphQL(`mutation ReplaceActorsForAssignable\b`))
+				mockPullRequestUpdate(reg)
+			},
+			stdout: "https://github.com/OWNER/REPO/pull/123\n",
+		},
+		{
 			name: "non-interactive projects v1 unsupported doesn't fetch v1 metadata",
 			input: &EditOptions{
 				Detector:    &fd.DisabledDetectorMock{},
