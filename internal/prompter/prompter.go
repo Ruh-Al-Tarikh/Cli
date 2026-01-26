@@ -27,8 +27,8 @@ type Prompter interface {
 	// Items passed in persistentOptions are always shown in the list, even when not selected.
 	// Unlike MultiSelect, MultiselectWithSearch returns the selected option strings,
 	// not their indices, since the list of options is dynamic.
-	// The searchFunc args and return values are: func(query) (map[keys]labels, moreResultsCount, searchError)
-	// Where the selected keys are eventually returned by MultiSelectWithSearch and the labels are what is shown to the user in the prompt.
+	// The searchFunc has the signature: func(query string) MultiSelectSearchResult.
+	// In the returned MultiSelectSearchResult, Keys are the values eventually returned by MultiSelectWithSearch and Labels are what is shown to the user in the prompt.
 	MultiSelectWithSearch(prompt, searchPrompt string, defaults []string, persistentOptions []string, searchFunc func(string) MultiSelectSearchResult) ([]string, error)
 	// Input prompts the user to enter a string value.
 	Input(prompt string, defaultValue string) (string, error)
