@@ -703,7 +703,6 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 
 // SuggestedAssignableActors fetches up to 10 suggested actors for a specific assignable
 // (Issue or PullRequest) node ID. `assignableID` is the GraphQL node ID for the Issue/PR.
-// If query is empty, the query variable is passed as null to omit filtering.
 // Returns the actors, the total count of available assignees in the repo, and an error.
 func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, int, error) {
 	type responseData struct {
