@@ -715,15 +715,15 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 			Issue struct {
 				SuggestedActors struct {
 					Nodes []struct {
-					    TypeName string `graphql:"__typename"`
-						User struct {
-							ID       string
-							Login    string
-							Name     string
+						TypeName string `graphql:"__typename"`
+						User     struct {
+							ID    string
+							Login string
+							Name  string
 						} `graphql:"... on User"`
 						Bot struct {
-							ID       string
-							Login    string
+							ID    string
+							Login string
 						} `graphql:"... on Bot"`
 					}
 				} `graphql:"suggestedActors(first: 10, query: $query)"`
@@ -731,15 +731,15 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 			PullRequest struct {
 				SuggestedActors struct {
 					Nodes []struct {
-					    TypeName string `graphql:"__typename"`
-						User struct {
-							ID       string
-							Login    string
-							Name     string							
+						TypeName string `graphql:"__typename"`
+						User     struct {
+							ID    string
+							Login string
+							Name  string
 						} `graphql:"... on User"`
 						Bot struct {
-							ID       string
-							Login    string
+							ID    string
+							Login string
 						} `graphql:"... on Bot"`
 					}
 				} `graphql:"suggestedActors(first: 10, query: $query)"`
@@ -763,14 +763,14 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 
 	var nodes []struct {
 		TypeName string `graphql:"__typename"`
-		User struct {
-			ID       string
-			Login    string
-			Name     string
+		User     struct {
+			ID    string
+			Login string
+			Name  string
 		} `graphql:"... on User"`
 		Bot struct {
-			ID       string
-			Login    string
+			ID    string
+			Login string
 		} `graphql:"... on Bot"`
 	}
 

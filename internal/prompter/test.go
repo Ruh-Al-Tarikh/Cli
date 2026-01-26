@@ -51,9 +51,7 @@ type markdownEditorStub struct {
 }
 
 type multiSelectWithSearchStub struct {
-	prompt       string
-	searchPrompt string
-	fn           func(string, string, []string, []string) ([]string, error)
+	fn func(string, string, []string, []string, func(string) MultiSelectSearchResult) ([]string, error)
 }
 
 func (m *MockPrompter) AuthToken() (string, error) {
@@ -106,7 +104,7 @@ func (m *MockPrompter) MultiSelectWithSearch(prompt, searchPrompt string, defaul
 	}
 	s = m.multiSelectWithSearchStubs[0]
 	m.multiSelectWithSearchStubs = m.multiSelectWithSearchStubs[1:len(m.multiSelectWithSearchStubs)]
-	return s.fn(prompt, searchPrompt, defaults, persistentOptions)
+	return s.fn(prompt, searchPrompt, defaults, persistentOptions, searchFunc)
 }
 
 func (m *MockPrompter) RegisterAuthToken(stub func() (string, error)) {
