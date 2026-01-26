@@ -704,8 +704,14 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 // SuggestedAssignableActors fetches up to 10 suggested actors for a specific assignable
 // (Issue or PullRequest) node ID. `assignableID` is the GraphQL node ID for the Issue/PR.
 // If query is empty, the query variable is passed as null to omit filtering.
-func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, error) {
+// Returns the actors, the total count of available assignees in the repo, and an error.
+func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, int, error) {
 	type responseData struct {
+		Repository struct {
+			AssignableUsers struct {
+				TotalCount int
+			}
+		} `graphql:"repository(owner: $owner, name: $name)"`
 		Node struct {
 			Issue struct {
 				SuggestedActors struct {
@@ -745,12 +751,16 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 	variables := map[string]interface{}{
 		"id":    githubv4.ID(assignableID),
 		"query": githubv4.String(query),
+		"owner": githubv4.String(repo.RepoOwner()),
+		"name":  githubv4.String(repo.RepoName()),
 	}
 
 	var result responseData
 	if err := client.Query(repo.RepoHost(), "SuggestedAssignableActors", &result, variables); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
+
+	availableAssigneesCount := result.Repository.AssignableUsers.TotalCount
 
 	var nodes []struct {
 		TypeName string `graphql:"__typename"`
@@ -781,7 +791,7 @@ func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignable
 		}
 	}
 
-	return actors, nil
+	return actors, availableAssigneesCount, nil
 }
 
 func UpdatePullRequestBranch(client *Client, repo ghrepo.Interface, params githubv4.UpdatePullRequestBranchInput) error {

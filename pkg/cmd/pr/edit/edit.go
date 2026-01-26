@@ -345,7 +345,7 @@ func editRun(opts *EditOptions) error {
 // while we continue to use IDs for mutating assignees with the GQL API.
 func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, editable *shared.Editable, assignableID string) func(string) prompter.MultiSelectSearchResult {
 	searchFunc := func(input string) prompter.MultiSelectSearchResult {
-		actors, err := api.SuggestedAssignableActors(
+		actors, availableAssigneesCount, err := api.SuggestedAssignableActors(
 			apiClient,
 			repo,
 			assignableID,
@@ -382,7 +382,7 @@ func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, editable *
 		return prompter.MultiSelectSearchResult{
 			Keys:        logins,
 			Labels:      displayNames,
-			MoreResults: 0,
+			MoreResults: availableAssigneesCount,
 			Err:         nil,
 		}
 	}
