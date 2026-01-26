@@ -420,6 +420,21 @@ func TestAccessiblePrompter(t *testing.T) {
 		assert.Equal(t, expectedValues, multiSelectValues)
 	})
 
+	t.Run("MultiSelectWithSearch - search error propagates", func(t *testing.T) {
+		console := newTestVirtualTerminal(t)
+		p := newTestAccessiblePrompter(t, console)
+
+		searchFunc := func(input string) prompter.MultiSelectSearchResult {
+			return prompter.MultiSelectSearchResult{
+				Err: fmt.Errorf("search error"),
+			}
+		}
+
+		_, err := p.MultiSelectWithSearch("Select", "Search", []string{}, []string{}, searchFunc)
+		require.Error(t, err)
+		require.Contains(t, err.Error(), "search error")
+	})
+
 	t.Run("Input", func(t *testing.T) {
 		console := newTestVirtualTerminal(t)
 		p := newTestAccessiblePrompter(t, console)
