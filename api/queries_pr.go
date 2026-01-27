@@ -701,6 +701,98 @@ func RemovePullRequestReviews(client *Client, repo ghrepo.Interface, prNumber in
 	return client.REST(repo.RepoHost(), "DELETE", path, buf, nil)
 }
 
+// SuggestedAssignableActors fetches up to 10 suggested actors for a specific assignable
+// (Issue or PullRequest) node ID. `assignableID` is the GraphQL node ID for the Issue/PR.
+// Returns the actors, the total count of available assignees in the repo, and an error.
+func SuggestedAssignableActors(client *Client, repo ghrepo.Interface, assignableID string, query string) ([]AssignableActor, int, error) {
+	type responseData struct {
+		Repository struct {
+			AssignableUsers struct {
+				TotalCount int
+			}
+		} `graphql:"repository(owner: $owner, name: $name)"`
+		Node struct {
+			Issue struct {
+				SuggestedActors struct {
+					Nodes []struct {
+						TypeName string `graphql:"__typename"`
+						User     struct {
+							ID    string
+							Login string
+							Name  string
+						} `graphql:"... on User"`
+						Bot struct {
+							ID    string
+							Login string
+						} `graphql:"... on Bot"`
+					}
+				} `graphql:"suggestedActors(first: 10, query: $query)"`
+			} `graphql:"... on Issue"`
+			PullRequest struct {
+				SuggestedActors struct {
+					Nodes []struct {
+						TypeName string `graphql:"__typename"`
+						User     struct {
+							ID    string
+							Login string
+							Name  string
+						} `graphql:"... on User"`
+						Bot struct {
+							ID    string
+							Login string
+						} `graphql:"... on Bot"`
+					}
+				} `graphql:"suggestedActors(first: 10, query: $query)"`
+			} `graphql:"... on PullRequest"`
+		} `graphql:"node(id: $id)"`
+	}
+
+	variables := map[string]interface{}{
+		"id":    githubv4.ID(assignableID),
+		"query": githubv4.String(query),
+		"owner": githubv4.String(repo.RepoOwner()),
+		"name":  githubv4.String(repo.RepoName()),
+	}
+
+	var result responseData
+	if err := client.Query(repo.RepoHost(), "SuggestedAssignableActors", &result, variables); err != nil {
+		return nil, 0, err
+	}
+
+	availableAssigneesCount := result.Repository.AssignableUsers.TotalCount
+
+	var nodes []struct {
+		TypeName string `graphql:"__typename"`
+		User     struct {
+			ID    string
+			Login string
+			Name  string
+		} `graphql:"... on User"`
+		Bot struct {
+			ID    string
+			Login string
+		} `graphql:"... on Bot"`
+	}
+
+	if result.Node.PullRequest.SuggestedActors.Nodes != nil {
+		nodes = result.Node.PullRequest.SuggestedActors.Nodes
+	} else if result.Node.Issue.SuggestedActors.Nodes != nil {
+		nodes = result.Node.Issue.SuggestedActors.Nodes
+	}
+
+	actors := make([]AssignableActor, 0, len(nodes))
+
+	for _, n := range nodes {
+		if n.TypeName == "User" && n.User.Login != "" {
+			actors = append(actors, AssignableUser{id: n.User.ID, login: n.User.Login, name: n.User.Name})
+		} else if n.TypeName == "Bot" && n.Bot.Login != "" {
+			actors = append(actors, AssignableBot{id: n.Bot.ID, login: n.Bot.Login})
+		}
+	}
+
+	return actors, availableAssigneesCount, nil
+}
+
 func UpdatePullRequestBranch(client *Client, repo ghrepo.Interface, params githubv4.UpdatePullRequestBranchInput) error {
 	var mutation struct {
 		UpdatePullRequestBranch struct {
