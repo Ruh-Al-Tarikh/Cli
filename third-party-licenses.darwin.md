@@ -38,7 +38,7 @@ Some packages may only be included on certain architectures or operating systems
 - [github.com/charmbracelet/x/term](https://pkg.go.dev/github.com/charmbracelet/x/term) ([MIT](https://github.com/charmbracelet/x/blob/term/v0.2.1/term/LICENSE))
 - [github.com/cli/browser](https://pkg.go.dev/github.com/cli/browser) ([BSD-2-Clause](https://github.com/cli/browser/blob/v1.3.0/LICENSE))
 - [github.com/cli/go-gh/v2](https://pkg.go.dev/github.com/cli/go-gh/v2) ([MIT](https://github.com/cli/go-gh/blob/v2.13.0/LICENSE))
-- [github.com/cli/oauth](https://pkg.go.dev/github.com/cli/oauth) ([MIT](https://github.com/cli/oauth/blob/v1.2.1/LICENSE))
+- [github.com/cli/oauth](https://pkg.go.dev/github.com/cli/oauth) ([MIT](https://github.com/cli/oauth/blob/v1.2.2/LICENSE))
 - [github.com/cli/safeexec](https://pkg.go.dev/github.com/cli/safeexec) ([BSD-2-Clause](https://github.com/cli/safeexec/blob/v1.0.1/LICENSE))
 - [github.com/cli/shurcooL-graphql](https://pkg.go.dev/github.com/cli/shurcooL-graphql) ([MIT](https://github.com/cli/shurcooL-graphql/blob/v0.0.4/LICENSE))
 - [github.com/containerd/stargz-snapshotter/estargz](https://pkg.go.dev/github.com/containerd/stargz-snapshotter/estargz) ([Apache-2.0](https://github.com/containerd/stargz-snapshotter/blob/estargz/v0.18.1/estargz/LICENSE))
