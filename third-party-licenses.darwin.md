@@ -151,7 +151,7 @@ Some packages may only be included on certain architectures or operating systems
 - [github.com/spf13/pflag](https://pkg.go.dev/github.com/spf13/pflag) ([BSD-3-Clause](https://github.com/spf13/pflag/blob/v1.0.10/LICENSE))
 - [github.com/stretchr/objx](https://pkg.go.dev/github.com/stretchr/objx) ([MIT](https://github.com/stretchr/objx/blob/v0.5.2/LICENSE))
 - [github.com/stretchr/testify](https://pkg.go.dev/github.com/stretchr/testify) ([MIT](https://github.com/stretchr/testify/blob/v1.11.1/LICENSE))
-- [github.com/theupdateframework/go-tuf/v2/metadata](https://pkg.go.dev/github.com/theupdateframework/go-tuf/v2/metadata) ([Apache-2.0](https://github.com/theupdateframework/go-tuf/blob/v2.3.1/LICENSE))
+- [github.com/theupdateframework/go-tuf/v2/metadata](https://pkg.go.dev/github.com/theupdateframework/go-tuf/v2/metadata) ([Apache-2.0](https://github.com/theupdateframework/go-tuf/blob/v2.4.1/LICENSE))
 - [github.com/thlib/go-timezone-local/tzlocal](https://pkg.go.dev/github.com/thlib/go-timezone-local/tzlocal) ([Unlicense](https://github.com/thlib/go-timezone-local/blob/v0.0.6/LICENSE))
 - [github.com/transparency-dev/formats/log](https://pkg.go.dev/github.com/transparency-dev/formats/log) ([Apache-2.0](https://github.com/transparency-dev/formats/blob/404c0d5b696c/LICENSE))
 - [github.com/transparency-dev/merkle](https://pkg.go.dev/github.com/transparency-dev/merkle) ([Apache-2.0](https://github.com/transparency-dev/merkle/blob/v0.0.2/LICENSE))
