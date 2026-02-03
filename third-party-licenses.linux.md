@@ -55,7 +55,7 @@ Some packages may only be included on certain architectures or operating systems
 - [github.com/fatih/color](https://pkg.go.dev/github.com/fatih/color) ([MIT](https://github.com/fatih/color/blob/v1.18.0/LICENSE.md))
 - [github.com/gabriel-vasile/mimetype](https://pkg.go.dev/github.com/gabriel-vasile/mimetype) ([MIT](https://github.com/gabriel-vasile/mimetype/blob/v1.4.11/LICENSE))
 - [github.com/gdamore/encoding](https://pkg.go.dev/github.com/gdamore/encoding) ([Apache-2.0](https://github.com/gdamore/encoding/blob/v1.0.1/LICENSE))
-- [github.com/gdamore/tcell/v2](https://pkg.go.dev/github.com/gdamore/tcell/v2) ([Apache-2.0](https://github.com/gdamore/tcell/blob/v2.13.4/LICENSE))
+- [github.com/gdamore/tcell/v2](https://pkg.go.dev/github.com/gdamore/tcell/v2) ([Apache-2.0](https://github.com/gdamore/tcell/blob/v2.13.8/LICENSE))
 - [github.com/go-logr/logr](https://pkg.go.dev/github.com/go-logr/logr) ([Apache-2.0](https://github.com/go-logr/logr/blob/v1.4.3/LICENSE))
 - [github.com/go-logr/stdr](https://pkg.go.dev/github.com/go-logr/stdr) ([Apache-2.0](https://github.com/go-logr/stdr/blob/v1.2.2/LICENSE))
 - [github.com/go-openapi/analysis](https://pkg.go.dev/github.com/go-openapi/analysis) ([Apache-2.0](https://github.com/go-openapi/analysis/blob/v0.24.1/LICENSE))
