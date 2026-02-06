@@ -12,6 +12,7 @@ import (
 	fd "github.com/cli/cli/v2/internal/featuredetection"
 	"github.com/cli/cli/v2/internal/gh"
 	"github.com/cli/cli/v2/internal/ghrepo"
+	"github.com/cli/cli/v2/internal/prompter"
 	shared "github.com/cli/cli/v2/pkg/cmd/pr/shared"
 	"github.com/cli/cli/v2/pkg/cmdutil"
 	"github.com/cli/cli/v2/pkg/iostreams"
@@ -292,6 +293,12 @@ func editRun(opts *EditOptions) error {
 
 	apiClient := api.NewClientFromHTTP(httpClient)
 
+	// Wire up search functions for assignees and reviewers.
+	// TODO KW: Wire up reviewer search func if/when it exists.
+	if issueFeatures.ActorIsAssignable {
+		editable.AssigneeSearchFunc = assigneeSearchFunc(apiClient, repo, &editable, pr.ID)
+	}
+
 	opts.IO.StartProgressIndicator()
 	err = opts.Fetcher.EditableOptionsFetch(apiClient, repo, &editable, opts.Detector.ProjectsV1())
 	opts.IO.StopProgressIndicator()
@@ -329,6 +336,57 @@ func editRun(opts *EditOptions) error {
 	fmt.Fprintln(opts.IO.Out, pr.URL)
 
 	return nil
+}
+
+// assigneeSearchFunc is intended to be an arg for MultiSelectWithSearch
+// to return potential assignee actors.
+// It also contains an important enclosure to update the editable's
+// assignable actors metadata for later ID resolution - this is required
+// while we continue to use IDs for mutating assignees with the GQL API.
+func assigneeSearchFunc(apiClient *api.Client, repo ghrepo.Interface, editable *shared.Editable, assignableID string) func(string) prompter.MultiSelectSearchResult {
+	searchFunc := func(input string) prompter.MultiSelectSearchResult {
+		actors, availableAssigneesCount, err := api.SuggestedAssignableActors(
+			apiClient,
+			repo,
+			assignableID,
+			input)
+		if err != nil {
+			return prompter.MultiSelectSearchResult{
+				Keys:        nil,
+				Labels:      nil,
+				MoreResults: 0,
+				Err:         err,
+			}
+		}
+
+		logins := make([]string, 0, len(actors))
+		displayNames := make([]string, 0, len(actors))
+
+		for _, a := range actors {
+			if a.Login() != "" {
+				logins = append(logins, a.Login())
+			} else {
+				continue
+			}
+
+			if a.DisplayName() != "" {
+				displayNames = append(displayNames, a.DisplayName())
+			} else {
+				displayNames = append(displayNames, a.Login())
+			}
+
+			// Update the assignable actors metadata in the editable struct
+			// so that updating the PR later can resolve the actor ID.
+			editable.Metadata.AssignableActors = append(editable.Metadata.AssignableActors, a)
+		}
+		return prompter.MultiSelectSearchResult{
+			Keys:        logins,
+			Labels:      displayNames,
+			MoreResults: availableAssigneesCount,
+			Err:         nil,
+		}
+	}
+	return searchFunc
 }
 
 func updatePullRequest(httpClient *http.Client, repo ghrepo.Interface, id string, number int, editable shared.Editable) error {

@@ -166,6 +166,16 @@ func (r forkableRefs) UnqualifiedHeadRef() string {
 	return r.qualifiedHeadRef.BranchName()
 }
 
+// isSameRef checks if the head and base refs point to the same ref in the same repository.
+// For cross-repository PRs (e.g., from a fork), the qualified head ref will contain
+// an owner prefix (owner:branch), so even if branch names match, they refer to different repos.
+func isSameRef(refs creationRefs) bool {
+	if strings.Contains(refs.QualifiedHeadRef(), ":") {
+		return false
+	}
+	return refs.UnqualifiedHeadRef() == refs.BaseRef()
+}
+
 // CreateContext stores contextual data about the creation process and is for building up enough
 // data to create a pull request.
 type CreateContext struct {
@@ -365,6 +375,10 @@ func createRun(opts *CreateOptions) error {
 	ctx, err := NewCreateContext(opts)
 	if err != nil {
 		return err
+	}
+
+	if isSameRef(ctx.PRRefs) {
+		return fmt.Errorf("head branch %q is the same as base branch %q, cannot create a pull request", ctx.PRRefs.UnqualifiedHeadRef(), ctx.PRRefs.BaseRef())
 	}
 
 	httpClient, err := opts.HttpClient()
