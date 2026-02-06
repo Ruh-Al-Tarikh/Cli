@@ -68,7 +68,13 @@ require (
 	golang.org/x/text v0.30.0
 >>>>>>> main
 	google.golang.org/grpc v1.75.0
+<<<<<<< HEAD
+<<<<<<< HEAD
+	google.golang.org/protobuf v1.36.10
+=======
+=======
 >>>>>>> main
+>>>>>>> 129f8b6e3123e3a8e5263cf7ccf067a6dbb2e4a9
 	google.golang.org/protobuf v1.36.9
 =======
 	golang.org/x/crypto v0.46.0
@@ -77,6 +83,7 @@ require (
 	golang.org/x/text v0.32.0
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.11
+>>>>>>> main
 >>>>>>> main
 	gopkg.in/h2non/gock.v1 v1.1.2
 	gopkg.in/yaml.v3 v3.0.1
