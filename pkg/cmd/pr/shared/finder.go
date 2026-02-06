@@ -349,7 +349,7 @@ func ParseFullReference(s string) (ghrepo.Interface, int, error) {
 
 	number, err := strconv.Atoi(m[3])
 	if err != nil {
-		return nil, 0, fmt.Errorf("invalid reference: %q", number)
+		return nil, 0, fmt.Errorf("invalid reference: %q; %w", s, err)
 	}
 
 	owner := m[1]
